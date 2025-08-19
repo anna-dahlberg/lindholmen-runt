@@ -8,11 +8,73 @@ let trailCoordinates = [];
 let trailPolyline;
 const visitRadius = 10; // meters
 let isTracking = false;
+let userHeading = null;
+let compassGranted = false;
 
 // Mobile-specific utilities
 function vibrate(pattern = [100]) {
   if ("vibrate" in navigator) {
     navigator.vibrate(pattern);
+  }
+}
+
+
+function initCompass() {
+  if (
+    typeof DeviceOrientationEvent !== "undefined" &&
+    typeof DeviceOrientationEvent.requestPermission === "function"
+  ) {
+    // iOS 13+ requires permission
+    DeviceOrientationEvent.requestPermission()
+      .then((permissionState) => {
+        if (permissionState === "granted") {
+          compassGranted = true;
+          window.addEventListener(
+            "deviceorientationabsolute",
+            handleOrientation
+          );
+          showMobileNotification("📱 Compass activated!");
+        } else {
+          showMobileNotification("⚠️ Compass permission denied", "error");
+        }
+      })
+      .catch(console.error);
+  } else {
+    // Non iOS or older devices
+    window.addEventListener("deviceorientationabsolute", handleOrientation);
+    window.addEventListener("deviceorientation", handleOrientation);
+    compassGranted = true;
+    showMobileNotification("📱 Compass activated!");
+  }
+}
+
+function handleOrientation(event) {
+  // Get the device heading (alpha is the compass direction)
+  let heading = null;
+
+  if (event.webkitCompassHeading) {
+    // iOS devices
+    heading = event.webkitCompassHeading;
+  } else if (event.absolute === true && event.alpha !== null) {
+    // Android devices
+    heading = 360 - event.alpha;
+  }
+
+  if (heading !== null && !isNaN(heading)) {
+    userHeading = heading;
+    updateUserMarker();
+  }
+}
+
+function updateUserMarker() {
+  if (!userLocationMarker || userHeading === null) return;
+
+  const markerElement = userLocationMarker.getElement();
+  if (markerElement) {
+    const arrow = markerElement.querySelector(".user-marker");
+    if (arrow) {
+      arrow.style.transform = `rotate(${userHeading}deg)`;
+    }
   }
 }
 
@@ -133,9 +195,6 @@ function onLocationFound(e) {
   trailCoordinates.push(userLocation);
 
   // Update trail polyline (check if initialized)
-  if (trailPolyline && document.getElementById("show-trail").checked) {
-    trailPolyline.setLatLngs(trailCoordinates);
-  }
 
   // Update or create user location marker
   if (userLocationMarker) {
@@ -265,8 +324,6 @@ function startTracking() {
   });
 
   document.getElementById("start-tracking").disabled = true;
-  document.getElementById("stop-tracking").disabled = false;
-  document.getElementById("center-user").disabled = false;
 }
 
 // Stop location tracking
@@ -435,7 +492,9 @@ function updateWaypointList() {
   const visitedCount = waypoints.filter((wp) => wp.visited).length;
   progressText.textContent = `Progress: ${visitedCount}/${waypoints.length}`;
 
-  progressDots.innerHTML = "";
+  while (progressDots.firstChild) {
+    progressDots.removeChild(progressDots.firstChild);
+  }
   waypoints.forEach((waypoint, index) => {
     const dot = document.createElement("div");
     dot.className = "progress-dot";
@@ -465,13 +524,23 @@ function updateDistanceInfo() {
   }
 
   if (!userLocation) {
-    distanceElement.innerHTML = "<strong>Distance to next: --</strong>";
+    while (distanceElement.firstChild) {
+      distanceElement.removeChild(distanceElement.firstChild);
+    }
+    const strong = document.createElement("strong");
+    strong.textContent = "Distance to next: --";
+    distanceElement.appendChild(strong);
     return;
   }
 
   const nextIndex = getNextWaypointIndex();
   if (nextIndex === -1) {
-    distanceElement.innerHTML = "<strong>🎉 All waypoints completed!</strong>";
+    while (distanceElement.firstChild) {
+      distanceElement.removeChild(distanceElement.firstChild);
+    }
+    const strong = document.createElement("strong");
+    strong.textContent = "🎉 All waypoints completed!";
+    distanceElement.appendChild(strong);
     return;
   }
 
@@ -483,10 +552,17 @@ function updateDistanceInfo() {
     nextWaypoint.coordinates[1]
   );
 
-  distanceElement.innerHTML = `
-        <strong>Next: ${nextWaypoint.name}</strong><br>
-        Distance: ${Math.round(distance)}m
-    `;
+  while (distanceElement.firstChild) {
+    distanceElement.removeChild(distanceElement.firstChild);
+  }
+  const strong = document.createElement("strong");
+  strong.textContent = `Next: ${nextWaypoint.name}`;
+  distanceElement.appendChild(strong);
+  distanceElement.appendChild(document.createElement("br"));
+  const distanceText = document.createTextNode(
+    `Distance: ${Math.round(distance)}m`
+  );
+  distanceElement.appendChild(distanceText);
 }
 
 // Reset waypoints and trail
@@ -630,6 +706,49 @@ function initializeApp() {
     setWaypointsBtn.addEventListener("click", setWaypointsAroundUser);
   if (trailToggle) trailToggle.addEventListener("change", toggleTrail);
 }
+
+function showScreen(screenId) {
+  const screens = document.querySelectorAll(".screen");
+  screens.forEach((screen) => {
+    screen.classList.remove("active");
+  });
+  document.getElementById(screenId).classList.add("active");
+}
+
+document
+  .getElementById("start-tracking")
+  .addEventListener("click", function () {
+    const selectedTime = document.querySelector('input[name="time"]:checked');
+    const selectedDifficulty = document.querySelector(
+      'input[name="difficulty"]:checked'
+    );
+
+    if (!selectedTime || !selectedDifficulty) {
+      alert("Vänligen välj både tid och svårighetsgrad!");
+      return;
+    }
+
+    showScreen("map-screen");
+  });
+
+document.getElementById("arrived-btn").addEventListener("click", function () {
+  showScreen("challenge-screen");
+});
+
+document.getElementById("done-btn").addEventListener("click", function () {
+  showScreen("final-screen");
+});
+
+document.getElementById("home-btn").addEventListener("click", function () {
+  document
+    .querySelectorAll('input[name="time"]')
+    .forEach((radio) => (radio.checked = false));
+  document
+    .querySelectorAll('input[name="difficulty"]')
+    .forEach((radio) => (radio.checked = false));
+
+  showScreen("start-screen");
+});
 
 // Wait for DOM to be ready
 if (document.readyState === "loading") {
