@@ -5,11 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lindholmen Runt</title>
     <link rel="stylesheet" href="main-styles.css">
+    <style>
+        /* Basic styling to ensure only one screen is visible at a time */
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
     <!-- Start screen -->
-    <section>
+    <section class="screen active" id="start-screen">
         <div>
             <div>
                 <h1>Lindholmen Runt</h1>
@@ -48,7 +57,7 @@
                 </div>
 
                 <div>
-                    <button>Skapa rutt</button>
+                    <button id="create-route-btn">Skapa rutt</button>
                 </div>
 
             </div>
@@ -56,12 +65,11 @@
     </section>
 
     <!-- Map screen -->
-
-    <section>
+    <section class="screen" id="map-screen">
         <div>
+            <p>Tid:</p>
             <p>Svårighetsgrad:</p>
             <p>Antal stopp:</p>
-            <p>Tid:</p>
         </div>
 
         <div>
@@ -71,12 +79,12 @@
         <div>
             <button>Öppna i Google Maps</button>
             <p>Framme vid stopp 1?</p>
-            <button>Framme!</button>
+            <button id="arrived-btn">Framme!</button>
         </div>
     </section>
 
     <!-- Challenge screen -->
-     <section>
+     <section class="screen" id="challenge-screen">
         <div>
             <h1>Stopp 1</h1>
         </div>
@@ -89,16 +97,18 @@
 
         <div>
             <p>Är du klar med övningen?</p>
-            <button>Klar!</button>
+            <button id="done-btn">Klar!</button>
         </div>
      </section>
 
      <!-- Final screen -->
-      <section>
+      <section class="screen" id="final-screen">
         <h1>Grattis du klarade det!</h1>
-        <p>Antal stopp:</p>
-        <p>Tidsåtgång:</p>
+
+        <button id="home-btn">Startsidan</button>
       </section>
+
+    <script src="main-script.js"></script>
     
 </body>
 </html>
