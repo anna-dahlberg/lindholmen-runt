@@ -20,6 +20,13 @@ function vibrate(pattern = [100]) {
 
 
 function initCompass() {
+  // Check if device supports device orientation
+  if (!window.DeviceOrientationEvent) {
+    console.log("Device orientation not supported");
+    showMobileNotification("📱 Compass not available on this device", "info");
+    return;
+  }
+
   if (
     typeof DeviceOrientationEvent !== "undefined" &&
     typeof DeviceOrientationEvent.requestPermission === "function"
@@ -29,22 +36,24 @@ function initCompass() {
       .then((permissionState) => {
         if (permissionState === "granted") {
           compassGranted = true;
-          window.addEventListener(
-            "deviceorientationabsolute",
-            handleOrientation
-          );
-          showMobileNotification("📱 Compass activated!");
+          // Try absolute orientation first, fall back to regular orientation
+          window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+          window.addEventListener("deviceorientation", handleOrientation, true);
+          showMobileNotification("🧭 Compass activated!");
         } else {
           showMobileNotification("⚠️ Compass permission denied", "error");
         }
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error("Compass permission error:", error);
+        showMobileNotification("⚠️ Compass permission error", "error");
+      });
   } else {
-    // Non iOS or older devices
-    window.addEventListener("deviceorientationabsolute", handleOrientation);
-    window.addEventListener("deviceorientation", handleOrientation);
+    // Non iOS or older devices - try both event types
+    window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+    window.addEventListener("deviceorientation", handleOrientation, true);
     compassGranted = true;
-    showMobileNotification("📱 Compass activated!");
+    showMobileNotification("🧭 Compass activated!");
   }
 }
 
@@ -52,17 +61,26 @@ function handleOrientation(event) {
   // Get the device heading (alpha is the compass direction)
   let heading = null;
 
-  if (event.webkitCompassHeading) {
-    // iOS devices
+  if (event.webkitCompassHeading !== undefined) {
+    // iOS devices - webkitCompassHeading gives true north
     heading = event.webkitCompassHeading;
   } else if (event.absolute === true && event.alpha !== null) {
-    // Android devices
+    // Android devices with absolute orientation
+    heading = 360 - event.alpha;
+  } else if (event.alpha !== null) {
+    // Fallback for devices without absolute orientation
     heading = 360 - event.alpha;
   }
 
   if (heading !== null && !isNaN(heading)) {
+    // Normalize heading to 0-360 range
+    heading = ((heading % 360) + 360) % 360;
+    
     userHeading = heading;
     updateUserMarker();
+    
+    // Optional: Update a compass display in the UI
+    updateCompassDisplay(heading);
   }
 }
 
@@ -73,7 +91,11 @@ function updateUserMarker() {
   if (markerElement) {
     const arrow = markerElement.querySelector(".user-marker");
     if (arrow) {
+      // Apply rotation to show direction
       arrow.style.transform = `rotate(${userHeading}deg)`;
+      
+      // Optional: Add smooth transition for compass updates
+      arrow.style.transition = "transform 0.3s ease-out";
     }
   }
 }
@@ -194,9 +216,7 @@ function onLocationFound(e) {
   // Add to trail
   trailCoordinates.push(userLocation);
 
-  // Update trail polyline (check if initialized)
-
-  // Update or create user location marker
+  // Update or create user location marker with directional indicator
   if (userLocationMarker) {
     userLocationMarker.setLatLng(userLocation);
     // Update popup with current coordinates
@@ -207,11 +227,12 @@ function onLocationFound(e) {
     )}<br>Accuracy: ${Math.round(accuracy)}m</p>
         `);
   } else {
+    // Create marker with directional indicator
     const userIcon = L.divIcon({
       className: "",
-      html: '<div class="user-marker"></div>',
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
+      html: '<div class="user-marker"></div>', // Using the enhanced CSS class
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
     });
 
     userLocationMarker = L.marker(userLocation, { icon: userIcon }).addTo(map)
@@ -227,6 +248,9 @@ function onLocationFound(e) {
 
     // Show success message on first location
     showMobileNotification("🎯 GPS tracking started!");
+
+    // Initialize compass for direction
+    initCompass();
 
     // Show accuracy feedback
     if (accuracy > 100) {
