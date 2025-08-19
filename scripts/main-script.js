@@ -28,5 +28,8 @@ document.getElementById('done-btn').addEventListener('click', function() {
 });
 
 document.getElementById('home-btn').addEventListener('click', function() {
+    document.querySelectorAll('input[name="time"]').forEach(radio => radio.checked = false);
+    document.querySelectorAll('input[name="difficulty"]').forEach(radio => radio.checked = false);
+    
     showScreen('start-screen');
 });
