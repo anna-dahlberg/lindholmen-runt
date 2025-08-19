@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Tracking with Waypoints</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <div class="info-panel">
+      <h3>Waypoint Progress</h3>
+      <div id="waypoint-list"></div>
+      <div class="distance-info" id="distance-info">
+        <strong>Distance to next: --</strong>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="start-tracking">Start Tracking</button>
+      <button id="stop-tracking" disabled>Stop Tracking</button>
+      <button id="reset-waypoints">Reset</button>
+      <button id="center-user" disabled>Center on Me</button>
+      <div class="trail-toggle">
+        <label>
+          <input type="checkbox" id="show-trail" checked />
+          Show Trail
+        </label>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
