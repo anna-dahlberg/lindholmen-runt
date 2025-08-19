@@ -28,10 +28,10 @@
 
                 <!-- Time selection -->
                 <div>
-                    <p>Välj tid</p>
+                    <p>Välj träningstid</p>
                     <div class="time-buttons">
-                        <input type="radio" name="time" id="time-15" value="15">
-                        <label for="time-15">15 min</label>
+                        <input type="radio" name="time" id="time-10" value="10">
+                        <label for="time-10">10 min</label>
                         
                         <input type="radio" name="time" id="time-20" value="20">
                         <label for="time-20">20 min</label>
@@ -43,16 +43,25 @@
 
                 <!-- Difficulty selection -->
                 <div>
-                    <p>Välj svårighetsgrad</p>
+                    <p>Välj träningsnivå</p>
                     <div class="difficulty-buttons">
-                        <input type="radio" name="difficulty" id="difficulty-easy" value="easy">
-                        <label for="difficulty-easy">Lätt</label>
+                        <div>
+                            <input type="radio" name="difficulty" id="difficulty-easy" value="easy">
+                            <label for="difficulty-easy">Låg</label>
+                            <p>Få repetitioner</p>
+                        </div>
                         
-                        <input type="radio" name="difficulty" id="difficulty-medium" value="medium">
-                        <label for="difficulty-medium">Medel</label>
+                        <div>
+                            <input type="radio" name="difficulty" id="difficulty-medium" value="medium">
+                            <label for="difficulty-medium"></label>
+                            <p>Fler repetitioner</p>
+                        </div>
                         
-                        <input type="radio" name="difficulty" id="difficulty-hard" value="hard">
-                        <label for="difficulty-hard">Svår</label>
+                        <div>
+                            <input type="radio" name="difficulty" id="difficulty-hard" value="hard">
+                            <label for="difficulty-hard">Hög</label>
+                            <p>Många repetitioner</p>
+                        </div>
                     </div>
                 </div>
 
