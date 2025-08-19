@@ -1,0 +1,87 @@
+/* Root styles */
+* {
+    font-family: 'Plus Jakarta Sans';
+    background-color: #F5EFED;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+h2 {
+    font-weight: 500;
+    font-size: 1.25rem;
+}
+
+.time-container, .difficulty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.difficulty-text {
+    font-size: 0.8rem;
+}
+
+.selection-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.screen {
+    display: none;
+}
+.screen.active {
+    display: block;
+}
+.time-buttons, .difficulty-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.time-buttons input[type="radio"], 
+.difficulty-buttons input[type="radio"] {
+    display: none;
+}
+
+.time-buttons label, 
+.difficulty-buttons label {
+    border: 1px solid #323232;
+    padding: 0.7rem 1rem;
+    border-radius: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.time-buttons input[type="radio"]:checked + label,
+.difficulty-buttons input[type="radio"]:checked + label {
+    background: #417B5A;
+    color: #F5EFED;
+    border-color: #417B5A;
+}
+
+.create-route-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+#create-route-btn {
+    border-radius: 1.25rem;
+    border: none;
+    padding: 1rem;
+    color: #FFF;
+    font-size: 1rem;
+    font-weight: 700;
+    background: #417B5A;
+}
