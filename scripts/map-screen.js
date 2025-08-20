@@ -20,8 +20,7 @@
 
       // Update challenge screen with current waypoint data
       function updateChallengeScreen(waypoint, difficulty) {
-        document.getElementById('challenge-title').textContent = `Stopp ${currentWaypointIndex + 1}`;
-        document.getElementById('challenge-name').textContent = waypoint.name;
+        document.getElementById('challenge-title').textContent = `${waypoint.name}`;
         
         let challengeText = '';
         switch(difficulty) {
