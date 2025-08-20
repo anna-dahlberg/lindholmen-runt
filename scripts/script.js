@@ -1,16 +1,16 @@
-import { waypoints } from "./locations.js";
+import { route_1 } from "./locations.js";
 
 let map;
 let userLocationMarker;
 let userLocation = null;
 let waypointMarkers = [];
+let routePolyline; // New: Line connecting waypoints
 let trailCoordinates = [];
 let trailPolyline;
-const visitRadius = 10; // meters
 let isTracking = false;
 let userHeading = null;
 let compassGranted = false;
-let currentWaypoints = waypoints; // Default waypoints
+let currentWaypoints = route_1; // Default waypoints
 
 // Mobile-specific utilities
 function vibrate(pattern = [100]) {
@@ -37,7 +37,11 @@ function initCompass() {
         if (permissionState === "granted") {
           compassGranted = true;
           // Try absolute orientation first, fall back to regular orientation
-          window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+          window.addEventListener(
+            "deviceorientationabsolute",
+            handleOrientation,
+            true
+          );
           window.addEventListener("deviceorientation", handleOrientation, true);
         } else {
           showMobileNotification("⚠️ Compass permission denied", "error");
@@ -49,7 +53,11 @@ function initCompass() {
       });
   } else {
     // Non iOS or older devices - try both event types
-    window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+    window.addEventListener(
+      "deviceorientationabsolute",
+      handleOrientation,
+      true
+    );
     window.addEventListener("deviceorientation", handleOrientation, true);
     compassGranted = true;
   }
@@ -73,10 +81,10 @@ function handleOrientation(event) {
   if (heading !== null && !isNaN(heading)) {
     // Normalize heading to 0-360 range
     heading = ((heading % 360) + 360) % 360;
-    
+
     userHeading = heading;
     updateUserMarker();
-    
+
     // Optional: Update a compass display in the UI
     updateCompassDisplay(heading);
   }
@@ -91,74 +99,13 @@ function updateUserMarker() {
     if (arrow) {
       // Apply rotation to show direction
       arrow.style.transform = `rotate(${userHeading}deg)`;
-      
+
       // Optional: Add smooth transition for compass updates
       arrow.style.transition = "transform 0.3s ease-out";
     }
   }
 }
 
-function showMobileNotification(message, type = "success") {
-  // Create custom mobile-friendly notification
-  const notification = document.createElement("div");
-  let bgColor;
-  switch (type) {
-    case "success":
-      bgColor = "linear-gradient(135deg, #11998e, #38ef7d)";
-      break;
-    case "error":
-      bgColor = "linear-gradient(135deg, #fc466b, #3f5efb)";
-      break;
-    case "info":
-      bgColor = "linear-gradient(135deg, #667eea, #764ba2)";
-      break;
-    default:
-      bgColor = "linear-gradient(135deg, #11998e, #38ef7d)";
-  }
-
-  notification.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: ${bgColor};
-        color: white;
-        padding: 20px 30px;
-        border-radius: 16px;
-        font-size: 18px;
-        font-weight: 600;
-        z-index: 10000;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        backdrop-filter: blur(10px);
-        text-align: center;
-        max-width: 80vw;
-    `;
-  notification.textContent = message;
-  document.body.appendChild(notification);
-
-  // Animate in
-  notification.style.opacity = "0";
-  notification.style.transform = "translate(-50%, -50%) scale(0.8)";
-  setTimeout(() => {
-    notification.style.transition = "all 0.3s ease";
-    notification.style.opacity = "1";
-    notification.style.transform = "translate(-50%, -50%) scale(1)";
-  }, 10);
-
-  // Remove after delay
-  const duration = type === "info" ? 2000 : 3000;
-  setTimeout(() => {
-    notification.style.opacity = "0";
-    notification.style.transform = "translate(-50%, -50%) scale(0.8)";
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.parentNode.removeChild(notification);
-      }
-    }, 300);
-  }, duration);
-
-  return notification;
-}
 
 // Initialize map with dynamic waypoints
 function initMap() {
@@ -177,7 +124,7 @@ function initMap() {
   addWaypoints();
   updateWaypointList();
 
-  // Initialize trail polyline
+  // Initialize trail polyline (user's actual path)
   trailPolyline = L.polyline([], {
     color: "#ff3366",
     weight: 4,
@@ -202,18 +149,23 @@ function initMap() {
 // Function to initialize map with a specific route
 function initializeMapWithRoute(newWaypoints) {
   currentWaypoints = newWaypoints;
-  
+
   if (map) {
     // Clear existing waypoint markers
-    waypointMarkers.forEach(marker => {
+    waypointMarkers.forEach((marker) => {
       map.removeLayer(marker);
     });
     waypointMarkers = [];
-    
-    // Add new waypoints
+
+    // Clear existing route line
+    if (routePolyline) {
+      map.removeLayer(routePolyline);
+    }
+
+    // Add new waypoints and route line
     addWaypoints();
     updateWaypointList();
-    
+
     // Center map on first waypoint of new route
     if (newWaypoints.length > 0) {
       map.setView(newWaypoints[0].coordinates, 16);
@@ -224,8 +176,9 @@ function initializeMapWithRoute(newWaypoints) {
   }
 }
 
-// Make this function available globally
+// Make these functions available globally
 window.initializeMapWithRoute = initializeMapWithRoute;
+window.markWaypointAsVisited = markWaypointAsVisited;
 
 // Handle successful location detection
 function onLocationFound(e) {
@@ -245,13 +198,6 @@ function onLocationFound(e) {
   // Update or create user location marker with directional indicator
   if (userLocationMarker) {
     userLocationMarker.setLatLng(userLocation);
-    // Update popup with current coordinates
-    userLocationMarker.setPopupContent(`
-            <h4>📍 Your Location</h4>
-            <p>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(
-      6
-    )}<br>Accuracy: ${Math.round(accuracy)}m</p>
-        `);
   } else {
     // Create marker with directional indicator
     const userIcon = L.divIcon({
@@ -261,13 +207,7 @@ function onLocationFound(e) {
       iconAnchor: [16, 16],
     });
 
-    userLocationMarker = L.marker(userLocation, { icon: userIcon }).addTo(map)
-      .bindPopup(`
-                <h4>📍 Your Location</h4>
-                <p>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(
-      6
-    )}<br>Accuracy: ${Math.round(accuracy)}m</p>
-            `);
+    userLocationMarker = L.marker(userLocation, { icon: userIcon }).addTo(map);
 
     // Center map on user location initially with higher zoom
     map.setView(userLocation, 18);
@@ -276,7 +216,6 @@ function onLocationFound(e) {
     initCompass();
   }
 
-  checkWaypoints();
   updateDistanceInfo();
 }
 
@@ -285,7 +224,7 @@ function onLocationError(e) {
   let message = "";
   switch (e.code) {
     case 1: // PERMISSION_DENIED
-      message = "📍 Please allow GPS access in your browser settings";
+      message = "🔒 Please allow GPS access in your browser settings";
       break;
     case 2: // POSITION_UNAVAILABLE
       message = "📡 GPS signal unavailable. Try moving to an open area";
@@ -305,8 +244,19 @@ function onLocationError(e) {
   stopTracking();
 }
 
-// Add waypoints to map (now uses currentWaypoints instead of hardcoded waypoints)
+// Add waypoints to map (now includes route line)
 function addWaypoints() {
+  // Create route line connecting all waypoints
+  const routeCoordinates = currentWaypoints.map(waypoint => waypoint.coordinates);
+  
+  routePolyline = L.polyline(routeCoordinates, {
+    color: "#417b5a", // Using your app's green color
+    weight: 3,
+    opacity: 0.7,
+    dashArray: "5, 10" // Dashed line to distinguish from user trail
+  }).addTo(map);
+
+  // Add waypoint markers
   currentWaypoints.forEach((waypoint, index) => {
     const markerClass = waypoint.visited
       ? "waypoint-visited"
@@ -314,23 +264,17 @@ function addWaypoints() {
       ? "waypoint-start"
       : "waypoint-pending";
 
+    // Use checkmark for visited waypoints, number for others
+    const markerContent = waypoint.visited ? "✓" : index + 1;
+
     const icon = L.divIcon({
       className: "",
-      html: `<div class="waypoint-marker ${markerClass}">${index + 1}</div>`,
+      html: `<div class="waypoint-marker ${markerClass}">${markerContent}</div>`,
       iconSize: [32, 32],
       iconAnchor: [16, 16],
     });
 
-    const marker = L.marker(waypoint.coordinates, { icon: icon }).addTo(map)
-      .bindPopup(`
-                <h4>${waypoint.name}</h4>
-                <p>${waypoint.description || ''}</p>
-                <small>Status: ${
-                  waypoint.visited
-                    ? '<strong style="color: green;">Visited ✓</strong>'
-                    : "Pending"
-                }</small>
-            `);
+    const marker = L.marker(waypoint.coordinates, { icon: icon }).addTo(map);
 
     waypointMarkers.push(marker);
     waypoint.marker = marker;
@@ -353,7 +297,7 @@ function startTracking() {
     enableHighAccuracy: true, // Use GPS for better accuracy
     timeout: 15000, // Timeout after 15 seconds
     maximumAge: 0, // Always get fresh location
-    setView: false, // Don't automatically set view (we'll handle it)
+    setView: false, // Don't set view automatically
   });
 
   const startBtn = document.getElementById("start-tracking");
@@ -371,7 +315,7 @@ function stopTracking() {
   const startBtn = document.getElementById("start-tracking");
   const stopBtn = document.getElementById("stop-tracking");
   const centerBtn = document.getElementById("center-user");
-  
+
   if (startBtn) startBtn.disabled = false;
   if (stopBtn) stopBtn.disabled = true;
   if (centerBtn) centerBtn.disabled = true;
@@ -379,59 +323,40 @@ function stopTracking() {
   showMobileNotification("ℹ️ GPS tracking stopped");
 }
 
-// Check if user has reached any waypoints (now uses currentWaypoints)
-function checkWaypoints() {
-  if (!userLocation) return;
+// Manual waypoint completion function
+function markWaypointAsVisited(waypointIndex) {
+  if (waypointIndex >= 0 && waypointIndex < currentWaypoints.length) {
+    const waypoint = currentWaypoints[waypointIndex];
 
-  currentWaypoints.forEach((waypoint, index) => {
     if (!waypoint.visited) {
-      const distance = calculateDistance(
-        userLocation[0],
-        userLocation[1],
-        waypoint.coordinates[0],
-        waypoint.coordinates[1]
-      );
+      waypoint.visited = true;
 
-      if (distance <= visitRadius) {
-        waypoint.visited = true;
+      // Mobile haptic feedback
+      vibrate([200, 100, 200, 100, 200]);
 
-        // Mobile haptic feedback
-        vibrate([200, 100, 200, 100, 200]);
+      // Update marker appearance with checkmark
+      const newIcon = L.divIcon({
+        className: "",
+        html: `<div class="waypoint-marker waypoint-visited">✓</div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+      });
 
-        // Update marker appearance
-        const newIcon = L.divIcon({
-          className: "",
-          html: `<div class="waypoint-marker waypoint-visited">${
-            index + 1
-          }</div>`,
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
-        });
+      waypoint.marker.setIcon(newIcon);
 
-        waypoint.marker.setIcon(newIcon);
-        waypoint.marker.setPopupContent(`
-                    <h4>${waypoint.name} ✓</h4>
-                    <p>${waypoint.description || ''}</p>
-                    <small>Status: <strong style="color: green;">Visited!</strong></small>
-                `);
+      updateWaypointList();
 
-        updateWaypointList();
-
-        // Show mobile-friendly completion message
-        setTimeout(() => {
-          showMobileNotification(`🎯 ${waypoint.name} reached!`);
-
-          // Check if all waypoints completed
-          if (currentWaypoints.every((wp) => wp.visited)) {
-            setTimeout(() => {
-              vibrate([300, 100, 300, 100, 300, 100, 300]);
-              showMobileNotification("🎉 All waypoints completed! Amazing!");
-            }, 1500);
-          }
-        }, 500);
-      }
+      // Show mobile-friendly completion message
+      setTimeout(() => {
+        // Check if all waypoints completed
+        if (currentWaypoints.every((wp) => wp.visited)) {
+          setTimeout(() => {
+            vibrate([300, 100, 300, 100, 300, 100, 300]);
+          }, 1500);
+        }
+      }, 500);
     }
-  });
+  }
 }
 
 // Calculate distance between two points in meters
@@ -552,11 +477,6 @@ function resetWaypoints() {
     });
 
     waypoint.marker.setIcon(newIcon);
-    waypoint.marker.setPopupContent(`
-            <h4>${waypoint.name}</h4>
-            <p>${waypoint.description || ''}</p>
-            <small>Status: Pending</small>
-        `);
   });
 
   // Clear trail
@@ -574,7 +494,6 @@ function centerOnUser() {
   if (userLocation) {
     map.setView(userLocation, 17);
     vibrate([50]);
-    showMobileNotification("📍 Centered on your location");
   }
 }
 
@@ -620,34 +539,36 @@ function showScreen(screenId) {
   document.getElementById(screenId).classList.add("active");
 }
 
-//Screen selection logic
-
 // Function to check if both selections are made and update button state
 function updateStartButtonState() {
   const selectedTime = document.querySelector('input[name="time"]:checked');
-  const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
-  const startButton = document.getElementById('start-tracking');
-  
+  const selectedDifficulty = document.querySelector(
+    'input[name="difficulty"]:checked'
+  );
+  const startButton = document.getElementById("start-tracking");
+
   if (selectedTime && selectedDifficulty) {
     startButton.disabled = false;
-    startButton.style.background = 'var(--green)';
-    startButton.style.cursor = 'pointer';
+    startButton.style.background = "var(--green)";
+    startButton.style.cursor = "pointer";
   } else {
     startButton.disabled = true;
-    startButton.style.background = 'var(--grey)';
-    startButton.style.cursor = 'not-allowed';
+    startButton.style.background = "var(--grey)";
+    startButton.style.cursor = "not-allowed";
   }
 }
 
 // Initialize button state and add listeners when DOM loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Initially disable the button
   updateStartButtonState();
-  
+
   // Add listeners to time and difficulty selections
-  document.querySelectorAll('input[name="time"], input[name="difficulty"]').forEach(radio => {
-    radio.addEventListener('change', updateStartButtonState);
-  });
+  document
+    .querySelectorAll('input[name="time"], input[name="difficulty"]')
+    .forEach((radio) => {
+      radio.addEventListener("change", updateStartButtonState);
+    });
 });
 
 document

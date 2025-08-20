@@ -1,20 +1,102 @@
-import { waypoints, route_2, route_3 } from './locations.js';
+import { route_1, route_2, route_3 } from './locations.js';
       
-      let selectedRoute = waypoints; // Default to route 1
+      let selectedRoute = route_1; // Default to route 1
       let selectedDifficulty = 'medium';
       let currentWaypointIndex = 0;
+
+      // Timer variables
+      let startTime = null;
+      let timerInterval = null;
+      let isTimerRunning = false;
 
       // Route selection based on time
       function selectRoute(timeSelection) {
         switch(timeSelection) {
           case '10':
-            return waypoints; // 4 waypoints
+            return route_1; // 4 waypoints
           case '20':
             return route_2; // 9 waypoints  
           case '30':
             return route_3; // 13 waypoints
           default:
-            return waypoints;
+            return route_1;
+        }
+      }
+
+      // Timer functions
+      function startTimer() {
+        if (!isTimerRunning) {
+          startTime = Date.now();
+          isTimerRunning = true;
+          timerInterval = setInterval(updateTimerDisplay, 1000);
+          updateTimerDisplay(); // Update immediately
+        }
+      }
+
+      function stopTimer() {
+        if (isTimerRunning) {
+          isTimerRunning = false;
+          if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+          }
+        }
+      }
+
+      function resetTimer() {
+        stopTimer();
+        startTime = null;
+        updateTimerDisplay();
+      }
+
+      function updateTimerDisplay() {
+        // Update timer on map screen
+        const timerElement = document.querySelector('.timer');
+        if (timerElement) {
+          const formattedTime = getFormattedTime();
+          timerElement.textContent = formattedTime;
+        }
+
+        // Update timer on challenge screen
+        const challengeTimerElement = document.querySelector('.challenge-timer');
+        if (challengeTimerElement) {
+          const formattedTime = getFormattedTime();
+          challengeTimerElement.textContent = formattedTime;
+        }
+      }
+
+      function getFormattedTime() {
+        if (!startTime) {
+          return '00:00';
+        }
+
+        const elapsed = isTimerRunning ? Date.now() - startTime : 0;
+        const seconds = Math.floor(elapsed / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+
+        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+      }
+
+      function getElapsedTime() {
+        if (!startTime) return 0;
+        return Math.floor((Date.now() - startTime) / 1000);
+      }
+
+      // Function to check if both selections are made and update button state
+      function updateStartButtonState() {
+        const selectedTime = document.querySelector('input[name="time"]:checked');
+        const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
+        const startButton = document.getElementById("start-tracking");
+
+        if (selectedTime && selectedDifficulty) {
+          startButton.disabled = false;
+          startButton.style.background = "var(--green)";
+          startButton.style.cursor = "pointer";
+        } else {
+          startButton.disabled = true;
+          startButton.style.background = "var(--grey)";
+          startButton.style.cursor = "not-allowed";
         }
       }
 
@@ -77,6 +159,9 @@ import { waypoints, route_2, route_3 } from './locations.js';
         // Update waypoints for the map
         window.currentWaypoints = selectedRoute;
         
+        // Start the timer when creating route
+        startTimer();
+        
         showScreen("map-screen");
         
         // Update instruction text for the first waypoint
@@ -97,12 +182,60 @@ import { waypoints, route_2, route_3 } from './locations.js';
         }
       });
 
-      // Done button
+      // Done button - now marks waypoint as visited
       document.getElementById("done-btn").addEventListener("click", function () {
+        // Mark current waypoint as visited before moving to next
+        if (window.markWaypointAsVisited && currentWaypointIndex < selectedRoute.length) {
+          window.markWaypointAsVisited(currentWaypointIndex);
+        }
+        
         currentWaypointIndex++;
         
         if (currentWaypointIndex >= selectedRoute.length) {
-          // All waypoints completed
+          // All waypoints completed - stop the timer
+          stopTimer();
+          
+          // Show completion time on final screen
+          const finalTime = getElapsedTime();
+          const minutes = Math.floor(finalTime / 60);
+          const seconds = finalTime % 60;
+          const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+          
+          // Update final screen with completion time
+          setTimeout(() => {
+            const finalScreen = document.getElementById('final-screen');
+            if (finalScreen) {
+              // Find the challenge-container div
+              const container = finalScreen.querySelector('.challenge-container');
+              if (container) {
+                // Check if completion time already exists
+                let timeDisplay = container.querySelector('.completion-time');
+                if (!timeDisplay) {
+                  // Create the time display element
+                  timeDisplay = document.createElement('p');
+                  timeDisplay.className = 'completion-time';
+                  timeDisplay.style.fontSize = '1.2rem';
+                  timeDisplay.style.fontWeight = '600';
+                  timeDisplay.style.marginBottom = '20px';
+                  
+                  // Insert after the main heading
+                  const heading = container.querySelector('h1');
+                  if (heading && heading.nextElementSibling) {
+                    container.insertBefore(timeDisplay, heading.nextElementSibling);
+                  } else if (heading) {
+                    // If no next element, insert after heading
+                    heading.insertAdjacentElement('afterend', timeDisplay);
+                  } else {
+                    // Fallback: prepend to container
+                    container.prepend(timeDisplay);
+                  }
+                }
+                // Update the text content
+                timeDisplay.textContent = `Din tid: ${timeString}`;
+              }
+            }
+          }, 100);
+          
           showScreen("final-screen");
         } else {
           // Go back to map for next waypoint
@@ -114,6 +247,9 @@ import { waypoints, route_2, route_3 } from './locations.js';
 
       // Home button
       document.getElementById("home-btn").addEventListener("click", function () {
+        // Reset timer when going home
+        resetTimer();
+        
         // Reset selections
         document.querySelectorAll('input[name="time"]').forEach((radio) => (radio.checked = false));
         document.querySelectorAll('input[name="difficulty"]').forEach((radio) => (radio.checked = false));
@@ -122,10 +258,19 @@ import { waypoints, route_2, route_3 } from './locations.js';
         showScreen("start-screen");
       });
 
-      // Cancel link
-      document.getElementById("cancel-link").addEventListener("click", function(e) {
-        e.preventDefault();
-        showScreen("start-screen");
+      // Cancel links - handle both map and challenge screen cancel buttons
+      document.querySelectorAll(".cancel-link").forEach(function(cancelLink) {
+        cancelLink.addEventListener("click", function(e) {
+          e.preventDefault();
+          
+          // Reset timer when cancelling
+          resetTimer();
+          
+          showScreen("start-screen");
+          
+          // Update button state after cancelling
+          updateStartButtonState();
+        });
       });
 
       // Make route data available globally for script.js

@@ -88,7 +88,7 @@ button:disabled {
 
 /* ---- */
 
-.time-container, .difficulty-container {
+.time-container, .difficulty-container, .timer-container, .challenge-timer-container {
     display: flex;
     flex-direction: column;
     align-items: center;

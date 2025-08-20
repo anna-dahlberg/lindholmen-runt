@@ -139,10 +139,10 @@
       <div class="map-screen-container">      
 
         <!-- Time -->
-
-        <div class="time-container">
-          <span class="time">00:00</span>
-          </div>
+        <div class="timer-container">
+          <span class="timer">00:00</span>
+        </div>
+        
         <!-- Instruction text -->
         <div class="map-instruction">
           Gå till Lindholmspiren
@@ -151,12 +151,12 @@
         <!-- Map container -->
         <div class="map-container">
           <div id="map"></div>
-          </div>
+        </div>
 
         <!-- Bottom section with button and cancel -->
         <div class="map-bottom-section">
-          <p class="arrival-instruction">Tryck när du är framme vid nästa stopp</p>
-          <button class="arrival-btn" id="arrived-btn">Jag är framme</button>
+          <p class="arrival-instruction">Tryck när du är framme vid platsen</p>
+          <button class="arrival-btn" id="arrived-btn">Visa övning</button>
           <a href="#" class="cancel-link" id="cancel-link">Avbryt</a>
         </div>
       </div>
@@ -165,6 +165,11 @@
     <!-- Challenge screen -->
     <section class="screen" id="challenge-screen">
       <div class="challenge-container">
+        <!-- Timer at the top of challenge screen -->
+        <div class="challenge-timer-container">
+          <span class="challenge-timer">00:00</span>
+        </div>
+        
         <div class="challenge-header">
           <h1 id="challenge-title" class="bold"></h1>
         </div>
@@ -176,7 +181,6 @@
         <div class="challenge-image" id="challenge-image">
           <img src="/" alt="">
         </div>
-
 
         <div class="challenge-actions">
           <p>Tryck när du har utfört övningen</p>
@@ -195,7 +199,6 @@
         <button class="challenge-done-btn" id="home-btn">Startsidan</button>
       </div>
     </section>
-
 
     <script type="module" src="scripts/script.js"></script>
     <script type="module" src="scripts/map-screen.js"></script>
