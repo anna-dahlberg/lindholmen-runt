@@ -45,6 +45,34 @@ h2 {
     font-size: 1.25rem;
 }
 
+/* Button styling */
+
+button {
+  background: var(--green);
+  color: var(--white);
+  border: none;
+  padding: 14px 18px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  touch-action: manipulation;
+  transition: all 0.2s ease;
+}
+
+button:visited
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:disabled {
+  background: rgba(108, 117, 125, 0.6);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---- */
+
 .time-container, .difficulty-container {
     display: flex;
     flex-direction: column;
@@ -81,7 +109,7 @@ h2 {
 
 .time-buttons label, 
 .difficulty-buttons label {
-    border: 1px solid var(--black)
+    border: 1px solid var(--black);
     padding: 0.7rem 1rem;
     border-radius: 1.25rem;
     cursor: pointer;
