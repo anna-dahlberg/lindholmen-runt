@@ -660,7 +660,7 @@ function updateStartButtonState() {
     startButton.style.cursor = 'pointer';
   } else {
     startButton.disabled = true;
-    startButton.style.background = 'rgba(108, 117, 125, 0.6)';
+    startButton.style.background = 'var(--grey)';
     startButton.style.cursor = 'not-allowed';
   }
 }
