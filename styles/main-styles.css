@@ -9,6 +9,7 @@
     --yellow: #FFC107;
     --warning: #FF4242;
     --background: #F5EFED;
+    --grey: #AEAEAE;
 }
 * {
     font-family: 'Plus Jakarta Sans';
@@ -72,16 +73,15 @@ button {
   transition: all 0.2s ease;
 }
 
-button:visited
-
 button:active {
   transform: scale(0.95);
 }
 
 button:disabled {
-  background: rgba(108, 117, 125, 0.6);
+  background: var(--grey);
   transform: none;
   box-shadow: none;
+  cursor: not-allowed;
 }
 
 /* ---- */
