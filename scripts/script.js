@@ -620,6 +620,74 @@ function showScreen(screenId) {
   document.getElementById(screenId).classList.add("active");
 }
 
+//Screen selection logic
+
+// Function to check if both selections are made and update button state
+function updateStartButtonState() {
+  const selectedTime = document.querySelector('input[name="time"]:checked');
+  const selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
+  const startButton = document.getElementById('start-tracking');
+  
+  if (selectedTime && selectedDifficulty) {
+    startButton.disabled = false;
+    startButton.style.background = 'var(--green)';
+    startButton.style.cursor = 'pointer';
+  } else {
+    startButton.disabled = true;
+    startButton.style.background = 'var(--grey)';
+    startButton.style.cursor = 'not-allowed';
+  }
+}
+
+// Initialize button state and add listeners when DOM loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Initially disable the button
+  updateStartButtonState();
+  
+  // Add listeners to time and difficulty selections
+  document.querySelectorAll('input[name="time"], input[name="difficulty"]').forEach(radio => {
+    radio.addEventListener('change', updateStartButtonState);
+  });
+});
+
+document
+  .getElementById("start-tracking")
+  .addEventListener("click", function () {
+    const selectedTime = document.querySelector('input[name="time"]:checked');
+    const selectedDifficulty = document.querySelector(
+      'input[name="difficulty"]:checked'
+    );
+
+    if (!selectedTime || !selectedDifficulty) {
+      alert("Vänligen välj både tid och svårighetsgrad!");
+      return;
+    }
+
+    showScreen("map-screen");
+  });
+
+document.getElementById("arrived-btn").addEventListener("click", function () {
+  showScreen("challenge-screen");
+});
+
+document.getElementById("done-btn").addEventListener("click", function () {
+  showScreen("final-screen");
+});
+
+document.getElementById("home-btn").addEventListener("click", function () {
+  document
+    .querySelectorAll('input[name="time"]')
+    .forEach((radio) => (radio.checked = false));
+  document
+    .querySelectorAll('input[name="difficulty"]')
+    .forEach((radio) => (radio.checked = false));
+
+  // Update button state after clearing selections
+  updateStartButtonState();
+
+  showScreen("start-screen");
+});
+
 // Wait for DOM to be ready
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initializeApp);

@@ -262,20 +262,12 @@
 }
 
 .map-instruction {
-  display: inline-flex;
-
+display: inline-flex;
 justify-content: center;
 align-items: center;
-gap: 0.625rem;
-padding-bottom: 1.87rem;
-color: #000;
-
-/* H1/bold */
-font-family: "Plus Jakarta Sans";
+padding: 16px 20px;
 font-size: 1.5rem;
-font-style: normal;
 font-weight: 700;
-line-height: normal;
 }
 
 .map-container {
@@ -301,8 +293,6 @@ aspect-ratio: 68/77;
 .time {
   color: var(--darkgreen);
 
-/* p1/bold */
-font-family: "Plus Jakarta Sans";
 font-size: 1rem;
 font-style: normal;
 font-weight: 700;
@@ -321,8 +311,6 @@ align-items: center;
 gap: 0.625rem;
 color: #000;
 
-/* p1/medium */
-font-family: "Plus Jakarta Sans";
 font-size: 1rem;
 font-style: normal;
 font-weight: 500;
@@ -341,12 +329,14 @@ background: var(--Primary-green, #417B5A);
 box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 color: var(--Background, #F5EFED);
 
-/* p1/bold */
-font-family: "Plus Jakarta Sans";
 font-size: 1rem;
 font-style: normal;
 font-weight: 700;
 line-height: normal;
+}
+
+.arrival-btn:hover {
+  background: #365a47;
 }
 
 .cancel-link {
@@ -397,6 +387,48 @@ width: 5rem;
   cursor: not-allowed;
 }
 
+/* Progress Overlay */
+.progress-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+}
+
+.progress-dots {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.progress-dot.visited {
+  background: #28a745;
+}
+
+.progress-dot.current {
+  background: #007bff;
+  transform: scale(1.2);
+}
+
+.distance-info {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
 /* Trail Controls */
 .trail-controls {
   margin-top: 12px;
@@ -424,37 +456,24 @@ width: 5rem;
   padding: 20px;
   text-align: center;
   min-height: 100vh;
-  background: #f5f5f5;
 }
 
 .challenge-header {
   margin-bottom: 30px;
 }
 
-.challenge-header h1 {
-  margin: 0;
-  color: #417b5a;
+#challenge-text {
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .challenge-image {
-  width: 200px;
-  height: 200px;
-  background: #e0e0e0;
-  border-radius: 16px;
+  width: 290px;
+  height: 330px;
   margin: 20px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48px;
-  color: #666;
-}
-
-.challenge-description {
-  background: white;
-  padding: 20px;
-  border-radius: 16px;
-  margin: 20px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .challenge-description h2 {
@@ -464,6 +483,14 @@ width: 5rem;
 
 .challenge-actions {
   margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px
+}
+
+.challenge-actions a {
+  margin-top: 48px;
 }
 
 .challenge-done-btn {
@@ -489,7 +516,3 @@ width: 5rem;
 .screen.active {
   display: block;
 }
-
-
-
-

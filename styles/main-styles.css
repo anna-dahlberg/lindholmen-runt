@@ -9,9 +9,11 @@
     --yellow: #FFC107;
     --warning: #FF4242;
     --background: #F5EFED;
+    --grey: #AEAEAE;
 }
 * {
     font-family: 'Plus Jakarta Sans';
+    background-color: var(--background);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -32,7 +34,8 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 4px
+    gap: 4px;
+    padding-top: 70px;
 }
 
 h1 {
@@ -72,16 +75,15 @@ button {
   transition: all 0.2s ease;
 }
 
-button:visited
-
 button:active {
   transform: scale(0.95);
 }
 
 button:disabled {
-  background: rgba(108, 117, 125, 0.6);
+  background: var(--grey);
   transform: none;
   box-shadow: none;
+  cursor: not-allowed;
 }
 
 /* ---- */
@@ -90,6 +92,7 @@ button:disabled {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 15px;
 }
 
 .difficulty-text {
@@ -157,7 +160,7 @@ button:disabled {
     flex-direction: column;
     gap: 50px;
     justify-content: flex-start;
-    padding: 80px 0 0 0;
+    padding-top: 40px;
 }
 
 .selection-wrapper {
