@@ -1,4 +1,15 @@
 /* Root styles */
+
+:root {
+    --white: #FFF;
+    --black: #323232;
+    --green: #417B5A;
+    --dark-green: #275239;
+    --orange: #FF8F00;
+    --yellow: #FFC107;
+    --warning: #FF4242;
+    --background: #F5EFED;
+}
 * {
     font-family: 'Plus Jakarta Sans';
     -webkit-touch-callout: none;
@@ -70,7 +81,7 @@ h2 {
 
 .time-buttons label, 
 .difficulty-buttons label {
-    border: 1px solid #323232;
+    border: 1px solid var(--black)
     padding: 0.7rem 1rem;
     border-radius: 1.25rem;
     cursor: pointer;
@@ -79,9 +90,9 @@ h2 {
 
 .time-buttons input[type="radio"]:checked + label,
 .difficulty-buttons input[type="radio"]:checked + label {
-    background: #417B5A;
-    color: #F5EFED;
-    border-color: #417B5A;
+    background: var(--green);
+    color: var(--background);
+    border-color: var(--green);
 }
 
 .create-route-button-container {
@@ -89,12 +100,12 @@ h2 {
     justify-content: center;
 }
 
-#create-route-btn {
+#start-tracking {
     border-radius: 1.25rem;
     border: none;
     padding: 1rem;
-    color: #FFF;
+    color: var(--white);
     font-size: 1rem;
     font-weight: 700;
-    background: #417B5A;
+    background: var(--green);
 }
