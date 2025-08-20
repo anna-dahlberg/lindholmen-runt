@@ -320,11 +320,9 @@
         text-decoration: none;
         font-size: 0.9rem;
         margin-top: 8px;
-      }
-
-      .cancel-link:hover {
         text-decoration: underline;
       }
+
 
       /* GPS Controls */
       .gps-controls {
