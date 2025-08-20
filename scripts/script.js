@@ -39,7 +39,6 @@ function initCompass() {
           // Try absolute orientation first, fall back to regular orientation
           window.addEventListener("deviceorientationabsolute", handleOrientation, true);
           window.addEventListener("deviceorientation", handleOrientation, true);
-          showMobileNotification("🧭 Compass activated!");
         } else {
           showMobileNotification("⚠️ Compass permission denied", "error");
         }
@@ -53,7 +52,6 @@ function initCompass() {
     window.addEventListener("deviceorientationabsolute", handleOrientation, true);
     window.addEventListener("deviceorientation", handleOrientation, true);
     compassGranted = true;
-    showMobileNotification("🧭 Compass activated!");
   }
 }
 
@@ -246,24 +244,10 @@ function onLocationFound(e) {
     // Center map on user location initially with higher zoom
     map.setView(userLocation, 18);
 
-    // Show success message on first location
-    showMobileNotification("🎯 GPS tracking started!");
-
     // Initialize compass for direction
     initCompass();
 
-    // Show accuracy feedback
-    if (accuracy > 100) {
-      showMobileNotification(
-        `⚠️ GPS accuracy: ${Math.round(accuracy)}m`,
-        "error"
-      );
-    } else if (accuracy > 50) {
-      showMobileNotification(
-        `📡 GPS accuracy: ${Math.round(accuracy)}m`,
-        "info"
-      );
-    }
+    
   }
 
   checkWaypoints();
@@ -334,7 +318,6 @@ function startTracking() {
     return;
   }
 
-  showMobileNotification("🔍 Getting your location...", "info");
   isTracking = true;
   vibrate([100, 50, 100]);
 
@@ -414,18 +397,7 @@ function updateUserLocation(position) {
     // Center map on user location initially with higher zoom
     map.setView(userLocation, 18);
 
-    // Show accuracy feedback
-    if (accuracy > 100) {
-      showMobileNotification(
-        `⚠️ GPS accuracy: ${Math.round(accuracy)}m`,
-        "error"
-      );
-    } else if (accuracy > 50) {
-      showMobileNotification(
-        `📡 GPS accuracy: ${Math.round(accuracy)}m`,
-        "info"
-      );
-    }
+    
   }
 
   checkWaypoints();
@@ -622,69 +594,6 @@ function resetWaypoints() {
   showMobileNotification("🔄 Reset complete!");
 }
 
-// Set waypoints around user's current location
-function setWaypointsAroundUser() {
-  if (!userLocation) {
-    showMobileNotification(
-      "📍 Start tracking first to get your location",
-      "error"
-    );
-    return;
-  }
-
-  vibrate([100, 50, 100]);
-
-  const [userLat, userLng] = userLocation;
-
-  // Create waypoints in a small area around user (roughly 100-200m apart)
-  const newWaypoints = [
-    {
-      id: 1,
-      name: "Start Point",
-      coordinates: [userLat, userLng],
-      visited: false,
-      description: "Begin your journey here",
-    },
-    {
-      id: 2,
-      name: "Checkpoint A",
-      coordinates: [userLat + 0.0015, userLng + 0.001], // ~150m north-east
-      visited: false,
-      description: "First checkpoint",
-    },
-    {
-      id: 3,
-      name: "Checkpoint B",
-      coordinates: [userLat + 0.002, userLng - 0.0015], // ~200m north-west
-      visited: false,
-      description: "Second checkpoint",
-    },
-    {
-      id: 4,
-      name: "Final Destination",
-      coordinates: [userLat - 0.001, userLng + 0.002], // ~150m south-east
-      visited: false,
-      description: "Complete your journey here!",
-    },
-  ];
-
-  // Clear existing waypoint markers
-  waypointMarkers.forEach((marker) => {
-    map.removeLayer(marker);
-  });
-  waypointMarkers = [];
-
-  // Update waypoints array
-  waypoints.length = 0;
-  waypoints.push(...newWaypoints);
-
-  // Add new waypoints to map
-  addWaypoints();
-  updateWaypointList();
-  updateDistanceInfo();
-
-  showMobileNotification("📌 Waypoints set around your location!");
-}
 
 // Center map on user location
 function centerOnUser() {
@@ -726,8 +635,6 @@ function initializeApp() {
   if (stopBtn) stopBtn.addEventListener("click", stopTracking);
   if (resetBtn) resetBtn.addEventListener("click", resetWaypoints);
   if (centerBtn) centerBtn.addEventListener("click", centerOnUser);
-  if (setWaypointsBtn)
-    setWaypointsBtn.addEventListener("click", setWaypointsAroundUser);
   if (trailToggle) trailToggle.addEventListener("change", toggleTrail);
 }
 
