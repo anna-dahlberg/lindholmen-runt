@@ -38,11 +38,24 @@ header {
 h1 {
     font-weight: 500;
     font-size: 1.5rem;
+    margin: 0;
 }
 
 h2 {
     font-weight: 500;
     font-size: 1.25rem;
+}
+
+section {
+    height: 100vh;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.center {
+    text-align: center;
 }
 
 /* Button styling */
@@ -136,4 +149,19 @@ button:disabled {
     font-size: 1rem;
     font-weight: 700;
     background: var(--green);
+}
+
+#start-screen-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    justify-content: flex-start;
+    padding: 80px 0 0 0;
+}
+
+.selection-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }
