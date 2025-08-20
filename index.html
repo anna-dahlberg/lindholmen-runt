@@ -25,7 +25,7 @@
     
     <!-- Start screen -->
     <section class="screen active" id="start-screen">
-      <div>
+      <div id="start-screen-container">
         <header>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +62,8 @@
           <h1>Lindholmen Runt</h1>
         </header>
 
-        <div>
+        <div class="selection-wrapper">
+          <h1 class="bold center">Anpassa träningsrunda</h1>
           <!-- Time selection -->
           <div class="time-container">
             <h2>Välj träningstid</h2>
@@ -126,7 +127,9 @@
           <div class="create-route-button-container">
             <button id="start-tracking">Skapa rutt</button>
           </div>
+
         </div>
+
       </div>
     </section>
 
@@ -138,7 +141,7 @@
         <p>Antal stopp:</p>
       </div>
 
-     <!-- <div id="map"></div> -->
+     <div id="map"></div>
 
       <div>
         <button>Öppna i Google Maps</button>
