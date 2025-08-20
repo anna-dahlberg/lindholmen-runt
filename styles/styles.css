@@ -418,35 +418,20 @@
         background: var(--background);
       }
 
-      .challenge-header {
-        margin-bottom: 30px;
-      }
-
-      .challenge-header h1 {
-        margin: 0;
-        color: #417B5A;
+      #challenge-text {
+        font-size: 20px;
+        font-weight: 500;
       }
 
       .challenge-image {
-        width: 200px;
-        height: 200px;
-        background: #e0e0e0;
-        border-radius: 16px;
+        width: 290px;
+        height: 330px;
         margin: 20px 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 48px;
-        color: #666;
       }
 
-      .challenge-description {
-        background: white;
-        padding: 20px;
-        border-radius: 16px;
-        margin: 20px 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      }
 
       .challenge-description h2 {
         margin-top: 0;
@@ -455,6 +440,14 @@
 
       .challenge-actions {
         margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px
+      }
+
+      .challenge-actions a {
+        margin-top: 48px;
       }
 
       .challenge-done-btn {
