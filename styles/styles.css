@@ -245,7 +245,7 @@
         display: flex;
         flex-direction: column;
         height: 100vh;
-        background: #f5f5f5;
+        background: var(--background);
       }
 
       .map-header {
@@ -254,8 +254,7 @@
         align-items: center;
         gap: 8px;
         padding: 20px;
-        background: white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background: var(--black);
         z-index: 1000;
       }
 
@@ -268,10 +267,8 @@
       .map-instruction {
         text-align: center;
         padding: 16px 20px;
-        background: white;
         font-size: 1.1rem;
         font-weight: 500;
-        border-bottom: 1px solid #e0e0e0;
       }
 
       .map-container {
@@ -285,10 +282,8 @@
       }
 
       .map-bottom-section {
-        background: white;
         padding: 20px;
         text-align: center;
-        box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
       }
 
       .arrival-instruction {
@@ -420,7 +415,7 @@
         padding: 20px;
         text-align: center;
         min-height: 100vh;
-        background: #f5f5f5;
+        background: var(--background);
       }
 
       .challenge-header {

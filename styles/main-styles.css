@@ -13,6 +13,7 @@
 }
 * {
     font-family: 'Plus Jakarta Sans';
+    background-color: var(--background);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -34,7 +35,7 @@ header {
     justify-content: center;
     align-items: center;
     gap: 4px;
-    padding-top: 80px;
+    padding-top: 70px;
 }
 
 h1 {
