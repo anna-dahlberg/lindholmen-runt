@@ -154,7 +154,7 @@
 
 /* Direction arrow */
 .user-marker::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -8px;
   left: 50%;
@@ -167,8 +167,6 @@
   z-index: 10;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
-
-
 
 @keyframes userPulse {
   0% {
@@ -241,235 +239,280 @@
   }
 }
 
-   .map-screen-container {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        background: var(--background);
-      }
+.map-screen-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;  
+  background-color:  var(--background);
+  align-items: center;
+}
 
-      .map-header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        padding: 20px;
-        background: var(--black);
-        z-index: 1000;
-      }
+.map-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  padding-top: 4.5rem;
+}
 
-      .map-header h1 {
-        font-weight: 500;
-        font-size: 1.5rem;
-        margin: 0;
-      }
+.map-header h1 {
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin: 0;
+}
 
-      .map-instruction {
-        text-align: center;
-        padding: 16px 20px;
-        font-size: 1.1rem;
-        font-weight: 500;
-      }
+.map-instruction {
+display: inline-flex;
+justify-content: center;
+align-items: center;
+padding: 16px 20px;
+font-size: 1.5rem;
+font-weight: 700;
+}
 
-      .map-container {
-        flex: 1;
-        position: relative;
-      }
+.map-container {
+  width: 20.3125rem;
+height: 23rem;
+flex-shrink: 0;
+aspect-ratio: 68/77;
+}
 
-      #map {
-        width: 100%;
-        height: 100%;
-      }
+#map {
+  width: 100%;
+  height: 100%;
+}
 
-      .map-bottom-section {
-        padding: 20px;
-        text-align: center;
-      }
+.map-bottom-section {
+  display: flex ;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 
-      .arrival-instruction {
-        font-size: 1rem;
-        margin-bottom: 16px;
-        color: #333;
-      }
+.time {
+  color: var(--darkgreen);
 
-      .arrival-btn {
-        background: #417B5A;
-        color: white;
-        border: none;
-        padding: 12px 32px;
-        border-radius: 20px;
-        font-size: 1rem;
-        font-weight: 600;
-        margin-bottom: 12px;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
+font-size: 1rem;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+padding-top: 0.97rem;
+padding-bottom: 0.94rem;
+}
 
-      .arrival-btn:hover {
-        background: #365a47;
-      }
+.arrival-instruction {
+  display: inline-flex;
+margin: 0;
+padding-top: 3.31rem;
+padding-bottom: 1.31rem;
+justify-content: center;
+align-items: center;
+gap: 0.625rem;
+color: #000;
 
-      .cancel-link {
-        display: block;
-        color: #ff6b6b;
-        text-decoration: none;
-        font-size: 0.9rem;
-        margin-top: 8px;
-        text-decoration: underline;
-      }
+font-size: 1rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+}
 
+.arrival-btn {
+  display: inline-flex;
+padding: 0.9375rem;
+justify-content: center;
+align-items: center;
+gap: 0.625rem;
+  transition: background 0.2s;
+  border-radius: 0.5rem;
+background: var(--Primary-green, #417B5A);
+box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+color: var(--Background, #F5EFED);
 
-      /* GPS Controls */
-      .gps-controls {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        z-index: 1000;
-      }
+font-size: 1rem;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}
 
-      .gps-btn {
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 12px;
-        cursor: pointer;
-        backdrop-filter: blur(10px);
-      }
+.arrival-btn:hover {
+  background: #365a47;
+}
 
-      .gps-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
+.cancel-link {
+  display: flex;
+justify-content: center;
+align-items: center;
+flex-shrink: 0;
+color: var(--warning);
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 300;
+line-height: normal;
+text-decoration-line: underline;
+text-decoration-style: solid;
+text-decoration-skip-ink: auto;
+text-decoration-thickness: auto;
+text-underline-offset: auto;
+text-underline-position: from-font;
+margin: 3.38rem 2.38rem;
+width: 5rem;
 
-      /* Progress Overlay */
-      .progress-overlay {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 12px;
-        border-radius: 12px;
-        z-index: 1000;
-        backdrop-filter: blur(10px);
-        font-size: 14px;
-      }
+}
 
-      .progress-dots {
-        display: flex;
-        gap: 6px;
-        margin: 8px 0;
-      }
+/* GPS Controls */
+.gps-controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
 
-      .progress-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-      }
+.gps-btn {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
 
-      .progress-dot.visited {
-        background: #28a745;
-      }
+.gps-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-      .progress-dot.current {
-        background: #007bff;
-        transform: scale(1.2);
-      }
+/* Progress Overlay */
+.progress-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+}
 
-      .distance-info {
-        margin-top: 8px;
-        font-size: 12px;
-      }
+.progress-dots {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0;
+}
 
-      /* Trail Controls */
-      .trail-controls {
-        margin-top: 12px;
-        text-align: left;
-      }
+.progress-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
 
-      .trail-controls label {
-        display: flex;
-        align-items: center;
-        font-size: 14px;
-        color: #666;
-        cursor: pointer;
-      }
+.progress-dot.visited {
+  background: #28a745;
+}
 
-      .trail-controls input {
-        margin-right: 8px;
-        transform: scale(1.2);
-      }
+.progress-dot.current {
+  background: #007bff;
+  transform: scale(1.2);
+}
 
-      /* Challenge Screen Styles */
-      .challenge-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-        text-align: center;
-        min-height: 100vh;
-        background: var(--background);
-      }
+.distance-info {
+  margin-top: 8px;
+  font-size: 12px;
+}
 
-      #challenge-text {
-        font-size: 20px;
-        font-weight: 500;
-      }
+/* Trail Controls */
+.trail-controls {
+  margin-top: 12px;
+  text-align: left;
+}
 
-      .challenge-image {
-        width: 290px;
-        height: 330px;
-        margin: 20px 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+.trail-controls label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+}
 
+.trail-controls input {
+  margin-right: 8px;
+  transform: scale(1.2);
+}
 
-      .challenge-description h2 {
-        margin-top: 0;
-        color: #417B5A;
-      }
+/* Challenge Screen Styles */
+.challenge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+  min-height: 100vh;
+}
 
-      .challenge-actions {
-        margin-top: 30px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px
-      }
+.challenge-header {
+  margin-bottom: 30px;
+}
 
-      .challenge-actions a {
-        margin-top: 48px;
-      }
+#challenge-text {
+  font-size: 20px;
+  font-weight: 500;
+}
 
-      .challenge-done-btn {
-        background: #417B5A;
-        color: white;
-        border: none;
-        padding: 16px 32px;
-        border-radius: 20px;
-        font-size: 18px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
+.challenge-image {
+  width: 290px;
+  height: 330px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-      .challenge-done-btn:hover {
-        background: #365a47;
-      }
+.challenge-description h2 {
+  margin-top: 0;
+  color: #417b5a;
+}
 
-      /* Hide other screens */
-      .screen {
-        display: none;
-      }
-      .screen.active {
-        display: block;
-      }
+.challenge-actions {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px
+}
+
+.challenge-actions a {
+  margin-top: 48px;
+}
+
+.challenge-done-btn {
+  background: #417b5a;
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.challenge-done-btn:hover {
+  background: #365a47;
+}
+
+/* Hide other screens */
+.screen {
+  display: none;
+}
+.screen.active {
+  display: block;
+}

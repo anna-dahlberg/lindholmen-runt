@@ -10,6 +10,7 @@ const visitRadius = 10; // meters
 let isTracking = false;
 let userHeading = null;
 let compassGranted = false;
+let currentWaypoints = waypoints; // Default waypoints
 
 // Mobile-specific utilities
 function vibrate(pattern = [100]) {
@@ -17,7 +18,6 @@ function vibrate(pattern = [100]) {
     navigator.vibrate(pattern);
   }
 }
-
 
 function initCompass() {
   // Check if device supports device orientation
@@ -160,13 +160,13 @@ function showMobileNotification(message, type = "success") {
   return notification;
 }
 
-// Initialize map
+// Initialize map with dynamic waypoints
 function initMap() {
-  // Create map centered on first waypoint
+  // Create map centered on first waypoint of current route
   map = L.map("map", {
-    zoomControl: true, // Remove zoom controls for mobile
-    attributionControl: false, // Remove attribution for cleaner mobile UI
-  }).setView(waypoints[0].coordinates, 16);
+    zoomControl: true,
+    attributionControl: false,
+  }).setView(currentWaypoints[0].coordinates, 16);
 
   // Add OpenStreetMap tiles
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -198,6 +198,34 @@ function initMap() {
   map.on("locationfound", onLocationFound);
   map.on("locationerror", onLocationError);
 }
+
+// Function to initialize map with a specific route
+function initializeMapWithRoute(newWaypoints) {
+  currentWaypoints = newWaypoints;
+  
+  if (map) {
+    // Clear existing waypoint markers
+    waypointMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+    waypointMarkers = [];
+    
+    // Add new waypoints
+    addWaypoints();
+    updateWaypointList();
+    
+    // Center map on first waypoint of new route
+    if (newWaypoints.length > 0) {
+      map.setView(newWaypoints[0].coordinates, 16);
+    }
+  } else {
+    // Initialize map if it doesn't exist yet
+    initMap();
+  }
+}
+
+// Make this function available globally
+window.initializeMapWithRoute = initializeMapWithRoute;
 
 // Handle successful location detection
 function onLocationFound(e) {
@@ -246,8 +274,6 @@ function onLocationFound(e) {
 
     // Initialize compass for direction
     initCompass();
-
-    
   }
 
   checkWaypoints();
@@ -279,9 +305,9 @@ function onLocationError(e) {
   stopTracking();
 }
 
-// Add waypoints to map
+// Add waypoints to map (now uses currentWaypoints instead of hardcoded waypoints)
 function addWaypoints() {
-  waypoints.forEach((waypoint, index) => {
+  currentWaypoints.forEach((waypoint, index) => {
     const markerClass = waypoint.visited
       ? "waypoint-visited"
       : index === 0
@@ -298,7 +324,7 @@ function addWaypoints() {
     const marker = L.marker(waypoint.coordinates, { icon: icon }).addTo(map)
       .bindPopup(`
                 <h4>${waypoint.name}</h4>
-                <p>${waypoint.description}</p>
+                <p>${waypoint.description || ''}</p>
                 <small>Status: ${
                   waypoint.visited
                     ? '<strong style="color: green;">Visited ✓</strong>'
@@ -330,7 +356,8 @@ function startTracking() {
     setView: false, // Don't automatically set view (we'll handle it)
   });
 
-  document.getElementById("start-tracking").disabled = true;
+  const startBtn = document.getElementById("start-tracking");
+  if (startBtn) startBtn.disabled = true;
 }
 
 // Stop location tracking
@@ -341,74 +368,22 @@ function stopTracking() {
   // Stop Leaflet's location watching
   map.stopLocate();
 
-  document.getElementById("start-tracking").disabled = false;
-  document.getElementById("stop-tracking").disabled = true;
-  document.getElementById("center-user").disabled = true;
+  const startBtn = document.getElementById("start-tracking");
+  const stopBtn = document.getElementById("stop-tracking");
+  const centerBtn = document.getElementById("center-user");
+  
+  if (startBtn) startBtn.disabled = false;
+  if (stopBtn) stopBtn.disabled = true;
+  if (centerBtn) centerBtn.disabled = true;
 
-  showMobileNotification("⏹️ GPS tracking stopped");
+  showMobileNotification("ℹ️ GPS tracking stopped");
 }
 
-// Update user location
-function updateUserLocation(position) {
-  const lat = position.coords.latitude;
-  const lng = position.coords.longitude;
-  const accuracy = position.coords.accuracy;
-
-  userLocation = [lat, lng];
-
-  console.log(
-    `Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}, Accuracy: ${accuracy}m`
-  );
-
-  // Add to trail
-  trailCoordinates.push(userLocation);
-
-  // Update trail polyline (check if initialized)
-  if (trailPolyline && document.getElementById("show-trail").checked) {
-    trailPolyline.setLatLngs(trailCoordinates);
-  }
-
-  // Update or create user location marker
-  if (userLocationMarker) {
-    userLocationMarker.setLatLng(userLocation);
-    // Update popup with current coordinates
-    userLocationMarker.setPopupContent(`
-            <h4>📍 Your Location</h4>
-            <p>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(
-      6
-    )}<br>Accuracy: ${Math.round(accuracy)}m</p>
-        `);
-  } else {
-    const userIcon = L.divIcon({
-      className: "",
-      html: '<div class="user-marker"></div>',
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-    });
-
-    userLocationMarker = L.marker(userLocation, { icon: userIcon }).addTo(map)
-      .bindPopup(`
-                <h4>📍 Your Location</h4>
-                <p>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(
-      6
-    )}<br>Accuracy: ${Math.round(accuracy)}m</p>
-            `);
-
-    // Center map on user location initially with higher zoom
-    map.setView(userLocation, 18);
-
-    
-  }
-
-  checkWaypoints();
-  updateDistanceInfo();
-}
-
-// Check if user has reached any waypoints
+// Check if user has reached any waypoints (now uses currentWaypoints)
 function checkWaypoints() {
   if (!userLocation) return;
 
-  waypoints.forEach((waypoint, index) => {
+  currentWaypoints.forEach((waypoint, index) => {
     if (!waypoint.visited) {
       const distance = calculateDistance(
         userLocation[0],
@@ -436,7 +411,7 @@ function checkWaypoints() {
         waypoint.marker.setIcon(newIcon);
         waypoint.marker.setPopupContent(`
                     <h4>${waypoint.name} ✓</h4>
-                    <p>${waypoint.description}</p>
+                    <p>${waypoint.description || ''}</p>
                     <small>Status: <strong style="color: green;">Visited!</strong></small>
                 `);
 
@@ -447,7 +422,7 @@ function checkWaypoints() {
           showMobileNotification(`🎯 ${waypoint.name} reached!`);
 
           // Check if all waypoints completed
-          if (waypoints.every((wp) => wp.visited)) {
+          if (currentWaypoints.every((wp) => wp.visited)) {
             setTimeout(() => {
               vibrate([300, 100, 300, 100, 300, 100, 300]);
               showMobileNotification("🎉 All waypoints completed! Amazing!");
@@ -475,7 +450,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-// Update waypoint list display (now compact with dots)
+// Update waypoint list display (now uses currentWaypoints)
 function updateWaypointList() {
   const progressText = document.getElementById("progress-text");
   const progressDots = document.getElementById("progress-dots");
@@ -485,13 +460,13 @@ function updateWaypointList() {
     return;
   }
 
-  const visitedCount = waypoints.filter((wp) => wp.visited).length;
-  progressText.textContent = `Progress: ${visitedCount}/${waypoints.length}`;
+  const visitedCount = currentWaypoints.filter((wp) => wp.visited).length;
+  progressText.textContent = `Progress: ${visitedCount}/${currentWaypoints.length}`;
 
   while (progressDots.firstChild) {
     progressDots.removeChild(progressDots.firstChild);
   }
-  waypoints.forEach((waypoint, index) => {
+  currentWaypoints.forEach((waypoint, index) => {
     const dot = document.createElement("div");
     dot.className = "progress-dot";
 
@@ -505,12 +480,12 @@ function updateWaypointList() {
   });
 }
 
-// Get next unvisited waypoint index
+// Get next unvisited waypoint index (now uses currentWaypoints)
 function getNextWaypointIndex() {
-  return waypoints.findIndex((wp) => !wp.visited);
+  return currentWaypoints.findIndex((wp) => !wp.visited);
 }
 
-// Update distance information
+// Update distance information (now uses currentWaypoints)
 function updateDistanceInfo() {
   const distanceElement = document.getElementById("distance-info");
 
@@ -540,7 +515,7 @@ function updateDistanceInfo() {
     return;
   }
 
-  const nextWaypoint = waypoints[nextIndex];
+  const nextWaypoint = currentWaypoints[nextIndex];
   const distance = calculateDistance(
     userLocation[0],
     userLocation[1],
@@ -561,11 +536,11 @@ function updateDistanceInfo() {
   distanceElement.appendChild(distanceText);
 }
 
-// Reset waypoints and trail
+// Reset waypoints and trail (now uses currentWaypoints)
 function resetWaypoints() {
   vibrate([100, 50, 100]);
 
-  waypoints.forEach((waypoint, index) => {
+  currentWaypoints.forEach((waypoint, index) => {
     waypoint.visited = false;
 
     const markerClass = index === 0 ? "waypoint-start" : "waypoint-pending";
@@ -579,7 +554,7 @@ function resetWaypoints() {
     waypoint.marker.setIcon(newIcon);
     waypoint.marker.setPopupContent(`
             <h4>${waypoint.name}</h4>
-            <p>${waypoint.description}</p>
+            <p>${waypoint.description || ''}</p>
             <small>Status: Pending</small>
         `);
   });
@@ -593,7 +568,6 @@ function resetWaypoints() {
 
   showMobileNotification("🔄 Reset complete!");
 }
-
 
 // Center map on user location
 function centerOnUser() {
@@ -611,8 +585,8 @@ function toggleTrail() {
     return;
   }
 
-  const showTrail = document.getElementById("show-trail").checked;
-  if (showTrail) {
+  const showTrail = document.getElementById("show-trail");
+  if (showTrail && showTrail.checked) {
     trailPolyline.setLatLngs(trailCoordinates);
   } else {
     trailPolyline.setLatLngs([]);

@@ -41,7 +41,7 @@ export const route_2 = [
 {
     id: 1,
     name: "Pingisbordet",
-    coordinates: [57.70579643449758, 11.935602150050574],
+    coordinates: [57.705792013988, 11.937850430535947],
     visited: false,
     easy_challenge: "Gör 3x3 dips mot bänken",
     medium_challenge: "Gör 6x3 dips mot bänken",
@@ -119,7 +119,7 @@ export const route_3 = [
     {
     id: 1,
     name: "Pingisbordet",
-    coordinates: [57.70579643449758, 11.935602150050574],
+    coordinates: [57.705792013988, 11.937850430535947],
     visited: false,
     easy_challenge: "Gör 3x3 dips mot bänken",
     medium_challenge: "Gör 6x3 dips mot bänken",
