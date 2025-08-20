@@ -1,4 +1,4 @@
- import { waypoints, route_2, route_3 } from './locations.js';
+import { waypoints, route_2, route_3 } from './locations.js';
       
       let selectedRoute = waypoints; // Default to route 1
       let selectedDifficulty = 'medium';
@@ -15,6 +15,19 @@
             return route_3; // 13 waypoints
           default:
             return waypoints;
+        }
+      }
+
+      // Update map instruction text with current destination
+      function updateMapInstruction() {
+        const instructionElement = document.querySelector('.map-instruction');
+        if (!instructionElement) return;
+
+        if (currentWaypointIndex < selectedRoute.length) {
+          const currentWaypoint = selectedRoute[currentWaypointIndex];
+          instructionElement.textContent = `Gå till ${currentWaypoint.name}`;
+        } else {
+          instructionElement.textContent = "Alla platser besökta!";
         }
       }
 
@@ -67,6 +80,9 @@
         
         showScreen("map-screen");
         
+        // Update instruction text for the first waypoint
+        updateMapInstruction();
+        
         // Initialize map with selected route
         if (window.initializeMapWithRoute) {
           window.initializeMapWithRoute(selectedRoute);
@@ -92,6 +108,8 @@
         } else {
           // Go back to map for next waypoint
           showScreen("map-screen");
+          // Update instruction text for the next waypoint
+          updateMapInstruction();
         }
       });
 
