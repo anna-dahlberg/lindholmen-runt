@@ -4,16 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lindholmen Runt</title>
+
     <link rel="stylesheet" href="/styles/main-styles.css" />
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
     />
-    <link rel="stylesheet" href="styles/styles.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
       rel="stylesheet"
@@ -23,7 +25,7 @@
     
     <!-- Start screen -->
     <section class="screen active" id="start-screen">
-      <div>
+      <div id="start-screen-container">
         <header>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +62,8 @@
           <h1>Lindholmen Runt</h1>
         </header>
 
-        <div>
+        <div class="selection-wrapper">
+          <h1 class="bold center">Anpassa träningsrunda</h1>
           <!-- Time selection -->
           <div class="time-container">
             <h2>Välj träningstid</h2>
@@ -124,7 +127,9 @@
           <div class="create-route-button-container">
             <button id="start-tracking">Skapa rutt</button>
           </div>
+
         </div>
+
       </div>
     </section>
 
@@ -171,5 +176,7 @@
     </section>
 
     <script type="module" src="scripts/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
   </body>
 </html>
