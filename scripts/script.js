@@ -40,6 +40,7 @@ function initMap() {
 
   // Set up Leaflet location event handlers
   map.on("locationfound", onLocationFound);
+  map.on("locationerror", onLocationError);
 }
 
 // Function to initialize map with a specific route
@@ -91,6 +92,152 @@ function onLocationFound(e) {
 
     map.setView(userLocation, 18);
   }
+}
+
+// Handle location errors
+function onLocationError(e) {
+  console.error("Location error:", e);
+  
+  // Reset tracking state
+  isTracking = false;
+  const startBtn = document.getElementById("start-tracking");
+  if (startBtn) startBtn.disabled = false;
+  
+  // Handle different types of location errors
+  let errorMessage = "";
+  let showRetryOption = false;
+  let isPermissionDenied = false;
+  
+  switch(e.code) {
+    case 1: // PERMISSION_DENIED
+      errorMessage = "Platståtkomst nekad. Du behöver tillåta platsdelning för att använda appen.";
+      showRetryOption = true;
+      isPermissionDenied = true;
+      break;
+    case 2: // POSITION_UNAVAILABLE
+      errorMessage = "Din plats kunde inte fastställas. Kontrollera att GPS är aktiverat och försök igen.";
+      showRetryOption = true;
+      break;
+    case 3: // TIMEOUT
+      errorMessage = "Platshämtning tog för lång tid. Kontrollera din internetanslutning och försök igen.";
+      showRetryOption = true;
+      break;
+    default:
+      errorMessage = "Ett fel uppstod vid platshämtning. Försök igen.";
+      showRetryOption = true;
+  }
+  
+  showLocationErrorModal(errorMessage, showRetryOption, isPermissionDenied);
+}
+
+// Show location error modal
+function showLocationErrorModal(message, showRetry = false, isPermissionDenied = false) {
+  // Remove any existing error modal
+  const existingModal = document.getElementById('locationErrorModal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+  
+  // Format message for multi-line display
+  const formattedMessage = message.replace(/\n/g, '<br>');
+  
+  // Different button text and action based on error type
+  const retryButtonText = isPermissionDenied ? "Tillbaka till start" : "Försök igen";
+  const retryFunction = isPermissionDenied ? "goBackToStart" : "retryLocationAccess";
+  
+  // Create modal HTML
+  const modalHTML = `
+    <div id="locationErrorModal" class="modal-overlay">
+      <div class="modal" style="height: auto; min-height: 11.6875rem; padding: 20px;">
+        <div class="modal-message">
+          <h2 style="color: var(--warning); margin-bottom: 1rem;">Platsfel</h2>
+          <div style="text-align: center; white-space: pre-line; line-height: 1.4;">${formattedMessage}</div>
+        </div>
+        <div class="modal-actions" style="margin-top: 20px;">
+          ${showRetry ? `<button class="modal-btn modal-btn-cancel" onclick="${retryFunction}()">${retryButtonText}</button>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Add modal to DOM
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  // Show modal
+  setTimeout(() => {
+    const modal = document.getElementById('locationErrorModal');
+    if (modal) {
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+  }, 100);
+}
+
+// Hide location error modal
+function hideLocationErrorModal() {
+  const modal = document.getElementById('locationErrorModal');
+  if (modal) {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      modal.remove();
+    }, 300);
+  }
+}
+
+// Retry location access - check permission status first
+function retryLocationAccess() {
+  hideLocationErrorModal();
+  
+  // Check permission status before retrying
+  if (navigator.permissions) {
+    navigator.permissions.query({name: 'geolocation'}).then(function(result) {
+      if (result.state === 'denied') {
+        // Still denied, show instructions again
+        setTimeout(() => {
+          showLocationErrorModal(
+            "Platståtkomst är fortfarande blockerad.",
+            true,
+            true
+          );
+        }, 500);
+        return;
+      }
+      
+      // Permission is granted or prompt, try again
+      setTimeout(() => {
+        startTracking();
+      }, 500);
+    }).catch(() => {
+      // Fallback - just try again
+      setTimeout(() => {
+        startTracking();
+      }, 500);
+    });
+  } else {
+    // Fallback for browsers without permissions API
+    setTimeout(() => {
+      startTracking();
+    }, 500);
+  }
+}
+
+// Go back to start screen (for permission denied errors)
+function goBackToStart() {
+  hideLocationErrorModal();
+  
+  // Reset all selections and go back to start screen
+  setTimeout(() => {
+    // Reset form selections
+    document.querySelectorAll('input[name="time"]').forEach((radio) => (radio.checked = false));
+    document.querySelectorAll('input[name="difficulty"]').forEach((radio) => (radio.checked = false));
+    
+    // Update button state
+    updateStartButtonState();
+    
+    // Show start screen
+    showScreen("start-screen");
+  }, 300);
 }
 
 // Get current waypoint index (first unvisited waypoint)
@@ -158,12 +305,39 @@ function addWaypoints() {
   updateAllWaypointMarkers();
 }
 
-// Start location tracking using Leaflet's locate method
+// Start location tracking with enhanced error handling
 function startTracking() {
   if (!navigator.geolocation) {
-    showMobileNotification("GPS not available on this device", "error");
+    showLocationErrorModal("GPS är inte tillgängligt på denna enhet.", false);
     return;
   }
+
+  // Check if we already denied permission before
+  if (navigator.permissions) {
+    navigator.permissions.query({name: 'geolocation'}).then(function(result) {
+      if (result.state === 'denied') {
+        showLocationErrorModal(
+          "Platståtkomst är blockerad. Du behöver tillåta platsdelning för att använda appen.",
+          true,
+          true
+        );
+        return;
+      }
+      
+      // Proceed with location tracking
+      startLocationTracking();
+    }).catch(() => {
+      // Fallback if permissions API not supported
+      startLocationTracking();
+    });
+  } else {
+    // Fallback for browsers without permissions API
+    startLocationTracking();
+  }
+}
+
+// Separate the actual tracking logic
+function startLocationTracking() {
   isTracking = true;
 
   // Use Leaflet's locate method
@@ -243,12 +417,15 @@ function centerOnUser() {
   if (userLocation && map) {
     map.setView(userLocation, 18);
   } else {
-    showMobileNotification("Location not available", "error");
+    showLocationErrorModal("Plats inte tillgänglig", false);
   }
 }
 
 window.resetWaypoints = resetWaypoints;
 window.centerOnUser = centerOnUser;
+window.hideLocationErrorModal = hideLocationErrorModal;
+window.retryLocationAccess = retryLocationAccess;
+window.goBackToStart = goBackToStart;
 
 // Initialize the app when page loads
 function initializeApp() {
@@ -349,6 +526,16 @@ document.getElementById("home-btn").addEventListener("click", function () {
   updateStartButtonState();
 
   showScreen("start-screen");
+});
+
+// Add keyboard support for error modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('locationErrorModal');
+    if (modal && modal.classList.contains('show')) {
+      hideLocationErrorModal();
+    }
+  }
 });
 
 if (document.readyState === "loading") {
