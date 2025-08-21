@@ -1,292 +1,335 @@
+/* ===== LAYOUT COMPONENTS ===== */
 
-
-.waypoint-status {
-  margin: 8px 0;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 500;
+/* Header */
+header {
+    background-color: var(--background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding-top: 70px;
 }
 
-.pending {
-  background: rgba(255, 193, 7, 0.2);
-  border: 2px solid #ffc107;
-  color: #ffc107;
+section {
+    height: 100vh;
 }
 
-.visited {
-  background: rgba(40, 167, 69, 0.2);
-  border: 2px solid #28a745;
-  color: #28a745;
+/* ===== START SCREEN ===== */
+#start-screen-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    justify-content: flex-start;
+    padding-top: 50px;
 }
 
-.current-target {
-  background: var(--warning) !important;
-  font-weight: 600;
+.selection-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 52px;
 }
 
-
-.distance-info {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 12px;
-  margin-top: 15px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 600;
+.time-container, 
+.difficulty-container, 
+.timer-container, 
+.challenge-timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
-.controls {
-  position: fixed;
-  top: 20px;
-  left: 15px;
-  right: 15px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  z-index: 1000;
+.difficulty-text {
+    font-size: 0.8rem;
 }
 
-.control-row {
-  display: contents;
+.selection-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-.control-full {
-  grid-column: 1 / -1;
+.time-buttons {
+    display: flex;
+    gap: 25px;
 }
 
-
-/* Custom marker styles - larger for mobile */
-.user-marker {
-  width: 32px;
-  height: 32px;
-  border-radius: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #0877ff;
-  position: relative;
+.difficulty-buttons {
+    display: flex;
+    gap: 10px;
 }
 
-.waypoint-marker {
-  width: 32px;
-  height: 32px;
-  border-radius: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: white;
-  font-size: 14px;
-}
-
-.waypoint-pending {
-  background: black;
-}
-
-.waypoint-visited {
-  background: var(--green);
-}
-
-.waypoint-start {
-  background: blue;
-}
-
-/* Landscape mode adjustments */
-@media (orientation: landscape) and (max-height: 500px) {
-  .info-panel {
-    max-height: 30vh;
-    font-size: 14px;
-  }
-
-  .controls {
-    top: 10px;
-  }
+.create-route-button-container {
+    display: flex;
+    justify-content: center;
 }
 
 #start-tracking {
-  margin-top: 18px;
+    margin-top: 18px;
 }
 
+/* ===== MAP SCREEN ===== */
 .map-screen-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background-color: var(--background);
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--background);
+    align-items: center;
 }
 
 .map-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.25rem;
-  padding-top: 4.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    padding-top: 4.5rem;
 }
 
 .map-header h1 {
-  font-weight: 500;
-  font-size: 1.5rem;
-  margin: 0;
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin: 0;
 }
 
 .map-instruction {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 16px 20px 16px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-align: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 16px 20px 16px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
 }
 
 .map-container {
-  width: 20.3125rem;
-  height: 23rem;
-  flex-shrink: 0;
-  aspect-ratio: 68/77;
+    width: 20.3125rem;
+    height: 23rem;
+    flex-shrink: 0;
+    aspect-ratio: 68/77;
 }
 
 #map {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .map-bottom-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-.timer, .challenge-timer {
-  color: var(--dark-green);
-
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  padding: 16px 0;
+.timer, 
+.challenge-timer {
+    color: var(--dark-green);
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    padding: 16px 0;
 }
 
 .arrival-instruction {
-  display: inline-flex;
-  margin: 0;
-  padding-top: 3.31rem;
-  padding-bottom: 1.31rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.625rem;
-  color: #000;
+    display: inline-flex;
+    margin: 0;
+    padding-top: 3.31rem;
+    padding-bottom: 1.31rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.625rem;
+    color: #000;
 }
 
 .arrival-btn,
-.challenge-done-btn  {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.625rem;
-  transition: background 0.2s;
-
+.challenge-done-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.625rem;
+    transition: background 0.2s;
 }
 
 .cancel-link {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  color: #B53131;
-  font-size: 0.875rem;
-  font-weight: 300;
-  margin: 2rem;
-  width: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--warning);
+    font-size: 0.875rem;
+    font-weight: 300;
+    margin: 2rem;
+    width: 5rem;
 }
 
-
-
-/* Challenge Screen Styles */
-.challenge-container, .final-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+/* ===== WAYPOINT & STATUS COMPONENTS ===== */
+.waypoint-status {
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
 }
 
-.challenge-header {
-  margin-bottom: 3.04px;
+.pending {
+    background: rgba(255, 193, 7, 0.2);
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
 }
 
-#challenge-text {
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 10px;
+.visited {
+    background: rgba(40, 167, 69, 0.2);
+    border: 2px solid #28a745;
+    color: #28a745;
 }
 
-.challenge-image-container {
-  width: 290px;
-  height: 330px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.current-target {
+    background: var(--warning) !important;
+    font-weight: 600;
 }
 
-.challenge-image {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
+.distance-info {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
 }
 
-.challenge-description h2 {
-  margin-top: 0;
-  color: #417b5a;
+/* ===== CONTROLS ===== */
+.controls {
+    position: fixed;
+    top: 20px;
+    left: 15px;
+    right: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    z-index: 1000;
 }
 
-.challenge-actions {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.control-row {
+    display: contents;
 }
 
-.challenge-actions p {
-  margin-bottom: 26px;
+.control-full {
+    grid-column: 1 / -1;
+}
+
+/* ===== MAP MARKERS ===== */
+.user-marker {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0877ff;
+    position: relative;
+}
+
+.waypoint-marker {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 14px;
+}
+
+.waypoint-pending {
+    background: var(--black);
+}
+
+.waypoint-visited {
+    background: var(--green);
+}
+
+.waypoint-start {
+    background: blue;
 }
 
 .leaflet-marker-icon {
-  background: transparent !important;
-  border: none !important;
-   box-shadow: none !important;
-}
-
-/* Hide other screens */
-.screen {
-  display: none;
-}
-.screen.active {
-  display: block;
-}
-
-/* Final screen */
-
-.final-image {
-  width: 21rem;
-  height: 21rem;
-}
-
-.final-container h1 {
-  padding: 2.2rem 0;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .leaflet-container {
-  background: transparent !important;
+    background: transparent !important;
 }
 
+/* ===== CHALLENGE SCREEN ===== */
+.challenge-container, 
+.final-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
 
-/* Cancel Overlay */
+.challenge-header {
+    margin-bottom: 3.04px;
+}
+
+#challenge-text {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.challenge-image-container {
+    width: 290px;
+    height: 330px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.challenge-image {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.challenge-description h2 {
+    margin-top: 0;
+    color: var(--green);
+}
+
+.challenge-actions {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.challenge-actions p {
+    margin-bottom: 26px;
+}
+
+/* ===== FINAL SCREEN ===== */
+.final-image {
+    width: 21rem;
+    height: 21rem;
+}
+
+.final-container h1 {
+    padding: 2.2rem 0;
+}
+
+/* ===== MODAL & OVERLAY ===== */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -309,7 +352,6 @@
     visibility: visible;
 }
 
-/* Modal Content */
 .modal {
     background: var(--background);
     padding: 10px;
@@ -348,17 +390,17 @@
 }
 
 .modal-btn-cancel {
-    background: #417B5A;
+    background: var(--green);
     color: var(--white);
 }
 
 .modal-btn-cancel:hover {
-    background: #2f5941;
+    background: var(--dark-green);
     transform: translateY(-1px);
 }
 
 .modal-btn-confirm {
-    background: #B53131;
+    background: var(--warning);
     color: var(--white);
 }
 
@@ -371,11 +413,24 @@
     transform: translateY(0);
 }
 
+/* ===== MEDIA QUERIES ===== */
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+    .info-panel {
+        max-height: 30vh;
+        font-size: 14px;
+    }
+
+    .controls {
+        top: 10px;
+    }
+}
+
 /* Mobile optimizations */
 @media (max-width: 480px) {
     .modal {
         margin: 20px;
         width: calc(100% - 40px);
     }
-
 }
