@@ -201,6 +201,22 @@
       </div>
     </section>
 
+    <!-- Cancel confirmation modal -->
+    <div class="modal-overlay" id="cancelModal">
+    <div class="modal">
+        <p class="modal-message">
+            Är du säker på att du vill<br>avbryta träningen?
+        </p>
+        <div class="modal-actions">
+            <button class="modal-btn modal-btn-confirm" onclick="confirmCancel()">
+                Ja, avbryt
+            </button>
+            <button class="modal-btn modal-btn-cancel" onclick="hideCancelConfirmation()">
+                Nej, gå tillbaka
+            </button>
+        </div>
+    </div>
+</div>
     <script type="module" src="scripts/script.js"></script>
     <script type="module" src="scripts/map-screen.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
