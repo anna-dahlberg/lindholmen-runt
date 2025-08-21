@@ -221,7 +221,7 @@ import { route_1, route_2, route_3 } from './locations.js';
                   timeDisplay.className = 'completion-time';
                   timeDisplay.style.fontSize = '1.5rem';
                   timeDisplay.style.fontWeight = '500';
-                  timeDisplay.style.marginBottom = '60px';
+                  timeDisplay.style.marginBottom = '40px';
                   
                   container.appendChild(timeDisplay);
                 }
