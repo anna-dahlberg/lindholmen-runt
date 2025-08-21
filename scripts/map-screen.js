@@ -1,6 +1,6 @@
 import { route_1, route_2, route_3 } from './locations.js';
       
-let selectedRoute = route_1; // Default to route 1
+let selectedRoute = route_1; 
 let selectedDifficulty = 'medium';
 let currentWaypointIndex = 0;
 
@@ -62,14 +62,12 @@ function resetTimer() {
 }
 
 function updateTimerDisplay() {
-  // Update timer on map screen
   const timerElement = document.querySelector('.timer');
   if (timerElement) {
     const formattedTime = getFormattedTime();
     timerElement.textContent = formattedTime;
   }
 
-  // Update timer on challenge screen
   const challengeTimerElement = document.querySelector('.challenge-timer');
   if (challengeTimerElement) {
     const formattedTime = getFormattedTime();
@@ -117,7 +115,6 @@ function updateMapInstruction() {
   const instructionElement = document.querySelector('.map-instruction');
   if (!instructionElement) return;
 
-  // Sync with actual waypoint state
   currentWaypointIndex = getCurrentWaypointIndex();
 
   if (currentWaypointIndex < selectedRoute.length) {
@@ -180,9 +177,6 @@ function showCancelConfirmation() {
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
     
-    if ('vibrate' in navigator) {
-      navigator.vibrate([100, 50, 100]);
-    }
   }
 }
 
@@ -195,9 +189,6 @@ function hideCancelConfirmation() {
 }
 
 function confirmCancel() {
-  if ('vibrate' in navigator) {
-    navigator.vibrate([200, 100, 200]);
-  }
   
   hideCancelConfirmation();
   
@@ -218,7 +209,6 @@ function confirmCancel() {
   }, 300);
 }
 
-// Make functions available globally for HTML onclick handlers
 window.showCancelConfirmation = showCancelConfirmation;
 window.hideCancelConfirmation = hideCancelConfirmation;
 window.confirmCancel = confirmCancel;
@@ -254,7 +244,6 @@ document.getElementById("start-tracking").addEventListener("click", function () 
 
 // Arrived button
 document.getElementById("arrived-btn").addEventListener("click", function () {
-  // Sync with actual waypoint state
   currentWaypointIndex = getCurrentWaypointIndex();
   
   if (currentWaypointIndex < selectedRoute.length) {
@@ -264,24 +253,20 @@ document.getElementById("arrived-btn").addEventListener("click", function () {
   }
 });
 
-// Done button - now marks waypoint as visited
+// Done button 
 document.getElementById("done-btn").addEventListener("click", function () {
   // Sync with actual waypoint state
   currentWaypointIndex = getCurrentWaypointIndex();
   
-  // Mark current waypoint as visited before moving to next
   if (window.markWaypointAsVisited && currentWaypointIndex < selectedRoute.length) {
     window.markWaypointAsVisited(currentWaypointIndex);
   }
   
-  // Update to next waypoint
   currentWaypointIndex = getCurrentWaypointIndex();
   
   if (currentWaypointIndex >= selectedRoute.length) {
-    // All waypoints completed - stop the timer
     stopTimer();
     
-    // Show completion time on final screen
     const finalTime = getElapsedTime();
     const minutes = Math.floor(finalTime / 60);
     const seconds = finalTime % 60;
@@ -311,30 +296,25 @@ document.getElementById("done-btn").addEventListener("click", function () {
     
     showScreen("final-screen");
   } else {
-    // Go back to map for next waypoint
     showScreen("map-screen");
-    // Update instruction text for the next waypoint
+
     updateMapInstruction();
   }
 });
 
 // Home button
 document.getElementById("home-btn").addEventListener("click", function () {
-  // Reset timer when going home
   resetTimer();
   
-  // Reset waypoints to unvisited state
   if (window.resetWaypoints) {
     window.resetWaypoints();
   }
   
-  // Reset selections
   document.querySelectorAll('input[name="time"]').forEach((radio) => (radio.checked = false));
   document.querySelectorAll('input[name="difficulty"]').forEach((radio) => (radio.checked = false));
   
   currentWaypointIndex = 0;
   
-  // Update button state
   updateStartButtonState();
   
   showScreen("start-screen");
@@ -350,9 +330,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// All DOM-dependent event listeners in DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
-  // Cancel links - handle both map and challenge screen cancel buttons
   document.querySelectorAll(".cancel-link").forEach(function(cancelLink) {
     cancelLink.addEventListener("click", function(e) {
       e.preventDefault();
