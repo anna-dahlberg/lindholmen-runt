@@ -19,13 +19,6 @@ function vibrate(pattern = [100]) {
   }
 }
 
-
-
-
-
-
-
-
 // Initialize map with dynamic waypoints
 function initMap() {
   // Create map centered on first waypoint of current route
@@ -265,7 +258,15 @@ function showScreen(screenId) {
   screens.forEach((screen) => {
     screen.classList.remove("active");
   });
-  document.getElementById(screenId).classList.add("active");
+  const activeScreen = document.getElementById(screenId);
+  activeScreen.classList.add("active");
+
+
+  if (screenId === "map-screen" && map) {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100); // Timeout säkerställer att div:en är synlig
+  }
 }
 
 // Function to check if both selections are made and update button state
