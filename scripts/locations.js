@@ -30,7 +30,7 @@ export const route_1 = [
   },
   {
     id: 4,
-    name: "Restaurang Diagonalen",
+    name: "Restaurang Äran",
     coordinates: [57.704410187796114, 11.937695571152092],
     easy_challenge: "Gör 4x3 utfallssteg och njut av utsikten",
     medium_challenge: "Gör 8x3 utfallssteg och njut av utsikten",
@@ -74,7 +74,7 @@ export const route_2 = [
   },
   {
     id: 4,
-    name: "Restaurang Diagonalen",
+    name: "Restaurang Äran",
     visited: false,
     coordinates: [57.704410187796114, 11.937695571152092],
     easy_challenge: "Gör 4x3 utfallssteg och njut av utsikten",
@@ -169,7 +169,7 @@ export const route_3 = [
   },
   {
     id: 4,
-    name: "Restaurang Diagonalen",
+    name: "Restaurang Äran",
     coordinates: [57.704410187796114, 11.937695571152092],
     visited: false,
     easy_challenge: "Gör 4x3 utfallssteg och njut av utsikten",
