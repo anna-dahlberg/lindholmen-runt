@@ -23,6 +23,18 @@ import { route_1, route_2, route_3 } from './locations.js';
         }
       }
 
+      // Reset current waypoint index (called from script.js)
+      function resetCurrentWaypointIndex() {
+        currentWaypointIndex = 0;
+      }
+
+      // Get current waypoint index based on visited status
+      function getCurrentWaypointIndex() {
+        // Find the first unvisited waypoint
+        const nextIndex = selectedRoute.findIndex(wp => !wp.visited);
+        return nextIndex === -1 ? selectedRoute.length : nextIndex;
+      }
+
       // Timer functions
       function startTimer() {
         if (!isTimerRunning) {
@@ -105,6 +117,9 @@ import { route_1, route_2, route_3 } from './locations.js';
         const instructionElement = document.querySelector('.map-instruction');
         if (!instructionElement) return;
 
+        // Sync with actual waypoint state
+        currentWaypointIndex = getCurrentWaypointIndex();
+
         if (currentWaypointIndex < selectedRoute.length) {
           const currentWaypoint = selectedRoute[currentWaypointIndex];
           instructionElement.textContent = `Gå till ${currentWaypoint.name}`;
@@ -114,30 +129,30 @@ import { route_1, route_2, route_3 } from './locations.js';
       }
 
       // Update challenge screen with current waypoint data
-        function updateChallengeScreen(waypoint, difficulty) {
-          document.getElementById('challenge-title').textContent = `${waypoint.name}`;
-          
-          let challengeText = '';
-          switch(difficulty) {
-            case 'easy':
-              challengeText = waypoint.easy_challenge;
-              break;
-            case 'medium':
-              challengeText = waypoint.medium_challenge;
-              break;
-            case 'hard':
-              challengeText = waypoint.hard_challenge;
-              break;
-          }
-          document.getElementById('challenge-text').textContent = challengeText;
-          
-          // Set the exercise image based on exercise_id
-          const challengeImage = document.querySelector('.challenge-image');
-            if (challengeImage && waypoint.exercise_id) {
-              challengeImage.src = `assets/${waypoint.exercise_id}.png`;
-              challengeImage.alt = `Exercise ${waypoint.exercise_id}`;
-            }
+      function updateChallengeScreen(waypoint, difficulty) {
+        document.getElementById('challenge-title').textContent = `${waypoint.name}`;
+        
+        let challengeText = '';
+        switch(difficulty) {
+          case 'easy':
+            challengeText = waypoint.easy_challenge;
+            break;
+          case 'medium':
+            challengeText = waypoint.medium_challenge;
+            break;
+          case 'hard':
+            challengeText = waypoint.hard_challenge;
+            break;
         }
+        document.getElementById('challenge-text').textContent = challengeText;
+        
+        // Set the exercise image based on exercise_id
+        const challengeImage = document.querySelector('.challenge-image');
+        if (challengeImage && waypoint.exercise_id) {
+          challengeImage.src = `assets/${waypoint.exercise_id}.png`;
+          challengeImage.alt = `Exercise ${waypoint.exercise_id}`;
+        }
+      }
 
       // Screen navigation
       function showScreen(screenId) {
@@ -146,6 +161,16 @@ import { route_1, route_2, route_3 } from './locations.js';
           screen.classList.remove("active");
         });
         document.getElementById(screenId).classList.add("active");
+        
+        // Update map instruction when showing map screen
+        if (screenId === "map-screen") {
+          setTimeout(() => {
+            updateMapInstruction();
+            if (window.map) {
+              window.map.invalidateSize();
+            }
+          }, 100);
+        }
       }
 
       // Start tracking button
@@ -162,6 +187,11 @@ import { route_1, route_2, route_3 } from './locations.js';
         selectedRoute = selectRoute(selectedTime.value);
         selectedDifficulty = selectedDifficultyRadio.value;
         currentWaypointIndex = 0;
+
+        // Reset all waypoints to unvisited state for new route
+        selectedRoute.forEach(waypoint => {
+          waypoint.visited = false;
+        });
 
         // Update waypoints for the map
         window.currentWaypoints = selectedRoute;
@@ -182,6 +212,9 @@ import { route_1, route_2, route_3 } from './locations.js';
 
       // Arrived button
       document.getElementById("arrived-btn").addEventListener("click", function () {
+        // Sync with actual waypoint state
+        currentWaypointIndex = getCurrentWaypointIndex();
+        
         if (currentWaypointIndex < selectedRoute.length) {
           const currentWaypoint = selectedRoute[currentWaypointIndex];
           updateChallengeScreen(currentWaypoint, selectedDifficulty);
@@ -191,12 +224,16 @@ import { route_1, route_2, route_3 } from './locations.js';
 
       // Done button - now marks waypoint as visited
       document.getElementById("done-btn").addEventListener("click", function () {
+        // Sync with actual waypoint state
+        currentWaypointIndex = getCurrentWaypointIndex();
+        
         // Mark current waypoint as visited before moving to next
         if (window.markWaypointAsVisited && currentWaypointIndex < selectedRoute.length) {
           window.markWaypointAsVisited(currentWaypointIndex);
         }
         
-        currentWaypointIndex++;
+        // Update to next waypoint
+        currentWaypointIndex = getCurrentWaypointIndex();
         
         if (currentWaypointIndex >= selectedRoute.length) {
           // All waypoints completed - stop the timer
@@ -239,16 +276,25 @@ import { route_1, route_2, route_3 } from './locations.js';
         }
       });
 
-      // Home button
+      // Home button - UPDATED TO RESET WAYPOINTS
       document.getElementById("home-btn").addEventListener("click", function () {
         // Reset timer when going home
         resetTimer();
+        
+        // Reset waypoints to unvisited state
+        if (window.resetWaypoints) {
+          window.resetWaypoints();
+        }
         
         // Reset selections
         document.querySelectorAll('input[name="time"]').forEach((radio) => (radio.checked = false));
         document.querySelectorAll('input[name="difficulty"]').forEach((radio) => (radio.checked = false));
         
         currentWaypointIndex = 0;
+        
+        // Update button state
+        updateStartButtonState();
+        
         showScreen("start-screen");
       });
 
@@ -260,6 +306,14 @@ import { route_1, route_2, route_3 } from './locations.js';
           // Reset timer when cancelling
           resetTimer();
           
+          // Reset waypoints when cancelling
+          if (window.resetWaypoints) {
+            window.resetWaypoints();
+          }
+          
+          // Reset waypoint index
+          currentWaypointIndex = 0;
+          
           showScreen("start-screen");
           
           // Update button state after cancelling
@@ -267,6 +321,8 @@ import { route_1, route_2, route_3 } from './locations.js';
         });
       });
 
-      // Make route data available globally for script.js
+      // Make functions available globally for script.js
       window.currentWaypoints = selectedRoute;
       window.selectedDifficulty = selectedDifficulty;
+      window.resetCurrentWaypointIndex = resetCurrentWaypointIndex;
+      window.getCurrentWaypointIndex = getCurrentWaypointIndex;

@@ -27,6 +27,9 @@ function initMap() {
     attributionControl: false,
   }).setView(currentWaypoints[0].coordinates, 16);
 
+  // Make map available globally for map-screen.js
+  window.map = map;
+
   // Add OpenStreetMap tiles
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors",
@@ -228,7 +231,70 @@ function getNextWaypointIndex() {
   return currentWaypoints.findIndex((wp) => !wp.visited);
 }
 
+function resetWaypoints() {
+  // Reset all waypoints in current route to unvisited
+  currentWaypoints.forEach((waypoint, index) => {
+    waypoint.visited = false;
+    
+    // Update marker appearance back to original state
+    if (waypoint.marker) {
+      const markerClass = index === 0 ? "waypoint-start" : "waypoint-pending";
+      const markerContent = index + 1;
+      
+      const newIcon = L.divIcon({
+        className: "",
+        html: `<div class="waypoint-marker ${markerClass}">${markerContent}</div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+      });
+      
+      waypoint.marker.setIcon(newIcon);
+    }
+  });
+  
+  // Clear trail coordinates and update trail polyline
+  trailCoordinates = [];
+  if (trailPolyline) {
+    trailPolyline.setLatLngs([]);
+  }
+  
+  // Reset waypoint index in map-screen.js if available
+  if (window.resetCurrentWaypointIndex) {
+    window.resetCurrentWaypointIndex();
+  }
+  
+  // Mobile haptic feedback
+  vibrate([100]);
+  
+  console.log("All waypoints reset to unvisited state");
+}
 
+// Stop location tracking
+function stopTracking() {
+  if (isTracking) {
+    isTracking = false;
+    map.stopLocate(); // Stop Leaflet's location watching
+    
+    const startBtn = document.getElementById("start-tracking");
+    if (startBtn) startBtn.disabled = false;
+    
+    vibrate([200]);
+    console.log("Tracking stopped");
+  }
+}
+
+// Center map on user location
+function centerOnUser() {
+  if (userLocation && map) {
+    map.setView(userLocation, 18);
+    vibrate([50]);
+  } else {
+    showMobileNotification("Location not available", "error");
+  }
+}
+
+window.resetWaypoints = resetWaypoints;
+window.centerOnUser = centerOnUser;
 
 
 
