@@ -29,12 +29,12 @@ body {
 }
 
 header {
+    background-color: var(--background);
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 4px;
     padding-top: 70px;
-    background: var(--background)
 }
 
 h1 {
