@@ -345,18 +345,19 @@
 }
 
 .challenge-header {
-  margin-bottom: 30px;
+  margin-bottom: 3.04px;
 }
 
 #challenge-text {
   font-size: 20px;
   font-weight: 500;
+  margin-bottom: 10px;
 }
 
 .challenge-image {
   width: 290px;
   height: 330px;
-  margin: 20px 0;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -372,11 +373,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
 }
 
-.challenge-actions a {
-  margin-top: 48px;
+.challenge-actions p {
+  margin-bottom: 26px;
 }
 
 .leaflet-marker-icon {
