@@ -16,6 +16,8 @@ function initMap() {
   map = L.map("map", {
     zoomControl: true,
     attributionControl: false,
+    rotate: true,     
+    touchRotate: true,   
   }).setView(currentWaypoints[0].coordinates, 16);
 
   window.map = map;
