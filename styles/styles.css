@@ -95,23 +95,6 @@
   grid-column: 1 / -1;
 }
 
-/* .start-btn {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-}
-
-.stop-btn {
-  background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
-}
-
-.reset-btn {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-}
-
-.center-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-} */
-
-
 
 /* Custom marker styles - larger for mobile */
 .user-marker {
@@ -300,7 +283,7 @@
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  color: var(--warning);
+  color: #B53131;
   font-size: 0.875rem;
   font-weight: 300;
   margin: 2rem;
@@ -413,3 +396,96 @@
 }
 
 
+/* Cancel Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Content */
+.modal {
+    background: var(--background);
+    padding: 10px;
+    width: 20.25rem;
+    height: 11.6875rem;
+    transform: scale(0.8) translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.show .modal {
+    transform: scale(1) translateY(0);
+}
+
+.modal-message {
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-btn {
+    width: 18.8125rem;
+    height: 2.8125rem;
+    padding: 0.625rem;
+    border-radius: 0;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-btn-cancel {
+    background: #417B5A;
+    color: var(--white);
+}
+
+.modal-btn-cancel:hover {
+    background: #2f5941;
+    transform: translateY(-1px);
+}
+
+.modal-btn-confirm {
+    background: #B53131;
+    color: var(--white);
+}
+
+.modal-btn-confirm:hover {
+    background: #872424;
+    transform: translateY(-1px);
+}
+
+.modal-btn:active {
+    transform: translateY(0);
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+    .modal {
+        margin: 20px;
+        width: calc(100% - 40px);
+    }
+
+}
