@@ -207,12 +207,10 @@
   .controls {
     top: 10px;
   }
+}
 
-  button {
-    padding: 12px 16px;
-    min-height: 48px;
-    font-size: 14px;
-  }
+#start-tracking {
+  margin-top: 18px;
 }
 
 .map-screen-container {
@@ -290,20 +288,11 @@
 .arrival-btn,
 .challenge-done-btn  {
   display: inline-flex;
-  padding: 0.9375rem;
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
   transition: background 0.2s;
-  border-radius: 0.5rem;
-  background: var(--Primary-green, #417b5a);
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  color: var(--Background, #f5efed);
 
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
 }
 
 .cancel-link {
@@ -313,16 +302,8 @@
   flex-shrink: 0;
   color: var(--warning);
   font-size: 0.875rem;
-  font-style: normal;
   font-weight: 300;
-  line-height: normal;
-  text-decoration-line: underline;
-  text-decoration-style: solid;
-  text-decoration-skip-ink: auto;
-  text-decoration-thickness: auto;
-  text-underline-offset: auto;
-  text-underline-position: from-font;
-  margin: 3.38rem 2.38rem;
+  margin: 2rem;
   width: 5rem;
 }
 
