@@ -205,33 +205,20 @@ import { route_1, route_2, route_3 } from './locations.js';
           setTimeout(() => {
             const finalScreen = document.getElementById('final-screen');
             if (finalScreen) {
-              // Find the challenge-container div
-              const container = finalScreen.querySelector('.challenge-container');
+              const container = finalScreen.querySelector('.final-time-container');
               if (container) {
-                // Check if completion time already exists
                 let timeDisplay = container.querySelector('.completion-time');
+
                 if (!timeDisplay) {
-                  // Create the time display element
                   timeDisplay = document.createElement('p');
                   timeDisplay.className = 'completion-time';
-                  timeDisplay.style.fontSize = '1.2rem';
-                  timeDisplay.style.fontWeight = '600';
-                  timeDisplay.style.marginBottom = '20px';
+                  timeDisplay.style.fontSize = '1.5rem';
+                  timeDisplay.style.fontWeight = '500';
+                  timeDisplay.style.marginBottom = '60px';
                   
-                  // Insert after the main heading
-                  const heading = container.querySelector('h1');
-                  if (heading && heading.nextElementSibling) {
-                    container.insertBefore(timeDisplay, heading.nextElementSibling);
-                  } else if (heading) {
-                    // If no next element, insert after heading
-                    heading.insertAdjacentElement('afterend', timeDisplay);
-                  } else {
-                    // Fallback: prepend to container
-                    container.prepend(timeDisplay);
-                  }
+                  container.appendChild(timeDisplay);
                 }
-                // Update the text content
-                timeDisplay.textContent = `Din tid: ${timeString}`;
+                timeDisplay.textContent = `Total tid: ${timeString}`;
               }
             }
           }, 100);

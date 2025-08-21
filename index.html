@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lindholmen Runt</title>
+    <link rel="icon" type="image/x-icon" href="/assets/tab_icon.png">
 
     <link rel="stylesheet" href="/styles/main-styles.css" />
     <link rel="stylesheet" href="styles/styles.css" />
@@ -155,7 +156,7 @@
 
         <!-- Bottom section with button and cancel -->
         <div class="map-bottom-section">
-          <p class="arrival-instruction">Tryck när du är framme vid platsen</p>
+          <p class="arrival-instruction">När du är framme, tryck på “Visa övning“</p>
           <button class="arrival-btn" id="arrived-btn">Visa övning</button>
           <a href="#" class="cancel-link" id="cancel-link">Avbryt</a>
         </div>
@@ -183,8 +184,8 @@
         </div>
 
         <div class="challenge-actions">
-          <p>Tryck när du har utfört övningen</p>
-          <button class="challenge-done-btn" id="done-btn">Jag är klar</button>
+          <p>När du har utfört övningen, tryck på “Klar”</p>
+          <button class="challenge-done-btn" id="done-btn">Klar</button>
           <a href="#" class="cancel-link" id="cancel-link">Avbryt</a>
         </div>
       </div>
@@ -192,10 +193,10 @@
 
     <!-- Final screen -->
     <section class="screen" id="final-screen">
-      <div class="challenge-container">
-        <h1>Grattis du klarade det!</h1>
-        <div class="challenge-image">🎉</div>
-        <p>Du har genomfört hela träningsrundan!</p>
+      <div class="final-container">
+        <h1 class="bold">Bra jobbat!<br>Du är klar med rundan!</h1>
+        <div><img src="/assets/trophy_gif.gif" alt="Moving image with trophy and fireworks" class= "final-image"></div>
+        <div class="final-time-container"></div>
         <button class="challenge-done-btn" id="home-btn">Startsidan</button>
       </div>
     </section>
