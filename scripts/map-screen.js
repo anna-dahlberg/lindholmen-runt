@@ -114,23 +114,30 @@ import { route_1, route_2, route_3 } from './locations.js';
       }
 
       // Update challenge screen with current waypoint data
-      function updateChallengeScreen(waypoint, difficulty) {
-        document.getElementById('challenge-title').textContent = `${waypoint.name}`;
-        
-        let challengeText = '';
-        switch(difficulty) {
-          case 'easy':
-            challengeText = waypoint.easy_challenge;
-            break;
-          case 'medium':
-            challengeText = waypoint.medium_challenge;
-            break;
-          case 'hard':
-            challengeText = waypoint.hard_challenge;
-            break;
+        function updateChallengeScreen(waypoint, difficulty) {
+          document.getElementById('challenge-title').textContent = `${waypoint.name}`;
+          
+          let challengeText = '';
+          switch(difficulty) {
+            case 'easy':
+              challengeText = waypoint.easy_challenge;
+              break;
+            case 'medium':
+              challengeText = waypoint.medium_challenge;
+              break;
+            case 'hard':
+              challengeText = waypoint.hard_challenge;
+              break;
+          }
+          document.getElementById('challenge-text').textContent = challengeText;
+          
+          // Set the exercise image based on exercise_id
+          const challengeImage = document.querySelector('.challenge-image');
+            if (challengeImage && waypoint.exercise_id) {
+              challengeImage.src = `assets/${waypoint.exercise_id}.png`;
+              challengeImage.alt = `Exercise ${waypoint.exercise_id}`;
+            }
         }
-        document.getElementById('challenge-text').textContent = challengeText;
-      }
 
       // Screen navigation
       function showScreen(screenId) {
