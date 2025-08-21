@@ -29,12 +29,12 @@ body {
 }
 
 header {
+    background-color: var(--background);
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 4px;
     padding-top: 70px;
-    background: var(--background)
 }
 
 h1 {
@@ -111,8 +111,14 @@ button:disabled {
 }
 .time-buttons, .difficulty-buttons {
     display: flex;
+}
+
+.time-buttons {
+    gap: 25px;
+}
+
+.difficulty-buttons {
     gap: 10px;
-    margin-top: 8px;
 }
 
 .time-buttons input[type="radio"], 
@@ -122,8 +128,12 @@ button:disabled {
 
 .time-buttons label, 
 .difficulty-buttons label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid var(--black);
-    padding: 0.7rem 1rem;
+    width: 80px;
+    height: 45px;
     border-radius: 1.25rem;
     cursor: pointer;
     transition: all 0.2s;
