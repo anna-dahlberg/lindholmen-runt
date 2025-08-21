@@ -156,7 +156,7 @@ function showLocationErrorModal(message, showRetry = false, isPermissionDenied =
           <div style="text-align: center; white-space: pre-line; line-height: 1.4;">${formattedMessage}</div>
         </div>
         <div class="modal-actions" style="margin-top: 20px;">
-          ${showRetry ? `<button class="modal-btn modal-btn-cancel" onclick="${retryFunction}()">${retryButtonText}</button>` : ''}
+          ${showRetry ? `<button class="modal-btn modal-btn-confirm" onclick="${retryFunction}()">${retryButtonText}</button>` : ''}
         </div>
       </div>
     </div>
