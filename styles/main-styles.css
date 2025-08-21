@@ -66,6 +66,8 @@ section {
 button {
   background: var(--green);
   color: var(--white);
+  width: 119px;
+  height: 50px;
   border: none;
   padding: 15px;
   border-radius: 8px;
