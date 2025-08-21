@@ -111,6 +111,13 @@ button:disabled {
 }
 .time-buttons, .difficulty-buttons {
     display: flex;
+}
+
+.time-buttons {
+    gap: 25px;
+}
+
+.difficulty-buttons {
     gap: 10px;
 }
 
