@@ -1,4 +1,4 @@
-/* Root styles */
+/* ==== Global styles ==== */
 :root {
     --white: #FFF;
     --black: #323232;
@@ -10,6 +10,7 @@
     --background: #F5EFED;
     --grey: #AEAEAE;
 }
+
 * {
     font-family: 'Plus Jakarta Sans';
     -webkit-touch-callout: none;
@@ -28,15 +29,7 @@ body {
     padding: 20px;
 }
 
-header {
-    background-color: var(--background);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-    padding-top: 70px;
-}
-
+/* ===== TYPOGRAPHY ===== */
 h1 {
     font-weight: 500;
     font-size: 1.5rem;
@@ -48,10 +41,7 @@ h2 {
     font-size: 1.25rem;
 }
 
-section {
-    height: 100vh;
-}
-
+/* ===== UTILITY CLASSES ===== */
 .bold {
     font-weight: 700;
 }
@@ -60,67 +50,37 @@ section {
     text-align: center;
 }
 
-/* Button styling */
-
-button {
-  background: var(--green);
-  color: var(--white);
-  width: 119px;
-  height: 50px;
-  border: none;
-  padding: 15px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 700;
-  touch-action: manipulation;
-  transition: all 0.2s ease;
-}
-
-button:disabled {
-  background: var(--grey);
-  transform: none;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-/* ---- */
-
-.time-container, .difficulty-container, .timer-container, .challenge-timer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-}
-
-.difficulty-text {
-    font-size: 0.8rem;
-}
-
-.selection-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
 .screen {
     display: none;
 }
+
 .screen.active {
     display: block;
 }
-.time-buttons, .difficulty-buttons {
-    display: flex;
+
+/* ===== BUTTON STYLES ===== */
+button {
+    background: var(--green);
+    color: var(--white);
+    width: 119px;
+    height: 50px;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    touch-action: manipulation;
+    transition: all 0.2s ease;
 }
 
-.time-buttons {
-    gap: 25px;
+button:disabled {
+    background: var(--grey);
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
 }
 
-.difficulty-buttons {
-    gap: 10px;
-}
-
+/* ===== FORM ELEMENTS ===== */
 .time-buttons input[type="radio"], 
 .difficulty-buttons input[type="radio"] {
     display: none;
@@ -144,24 +104,4 @@ button:disabled {
     background: var(--green);
     color: var(--background);
     border-color: var(--green);
-}
-
-.create-route-button-container {
-    display: flex;
-    justify-content: center;
-}
-
-#start-screen-container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-    justify-content: flex-start;
-    padding-top: 50px;
-}
-
-.selection-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 52px;
 }

@@ -9,20 +9,17 @@ let trailPolyline;
 let isTracking = false;
 let userHeading = null;
 let compassGranted = false;
-let currentWaypoints = route_1; // Default waypoints
+let currentWaypoints = route_1; 
 
 // Initialize map with dynamic waypoints
 function initMap() {
-  // Create map centered on first waypoint of current route
   map = L.map("map", {
     zoomControl: true,
     attributionControl: false,
   }).setView(currentWaypoints[0].coordinates, 16);
 
-  // Make map available globally for map-screen.js
   window.map = map;
 
-  // Add OpenStreetMap tiles
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors",
     maxZoom: 19,
@@ -30,10 +27,8 @@ function initMap() {
 
   addWaypoints();
   
-
   // Add mobile-specific map interactions
   map.on("dragstart", () => {
-    // Prevent scrolling while dragging map
     document.body.style.overflow = "hidden";
   });
 
@@ -50,25 +45,18 @@ function initializeMapWithRoute(newWaypoints) {
   currentWaypoints = newWaypoints;
 
   if (map) {
-    // Clear existing waypoint markers
     waypointMarkers.forEach((marker) => {
       map.removeLayer(marker);
     });
     waypointMarkers = [];
 
-    
-
-    // Add new waypoints and route line
     addWaypoints();
 
-  
   } else {
-    // Initialize map if it doesn't exist yet
     initMap();
   }
 }
 
-// Make these functions available globally
 window.initializeMapWithRoute = initializeMapWithRoute;
 window.markWaypointAsVisited = markWaypointAsVisited;
 
@@ -84,28 +72,23 @@ function onLocationFound(e) {
     `Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}, Accuracy: ${accuracy}m`
   );
 
-  // Add to trail
   trailCoordinates.push(userLocation);
 
   // Update or create user location marker with directional indicator
   if (userLocationMarker) {
     userLocationMarker.setLatLng(userLocation);
   } else {
-    // Create marker with directional indicator
     const userIcon = L.divIcon({
       className: "",
-      html: '<div class="user-marker"></div>', // Using the enhanced CSS class
+      html: '<div class="user-marker"></div>',
       iconSize: [32, 32],
       iconAnchor: [16, 16],
     });
 
     userLocationMarker = L.marker(userLocation, { icon: userIcon }).addTo(map);
 
-    // Center map on user location initially with higher zoom
     map.setView(userLocation, 18);
-
   }
-
 }
 
 // Get current waypoint index (first unvisited waypoint)
@@ -156,13 +139,11 @@ function updateAllWaypointMarkers() {
 
 // Add waypoints to map (now includes route line and current target highlighting)
 function addWaypoints() {
-
-  // Add waypoint markers
   currentWaypoints.forEach((waypoint, index) => {
     const marker = L.marker(waypoint.coordinates, { 
       icon: L.divIcon({
         className: "",
-        html: `<div class="waypoint-marker"></div>`, // Placeholder, will be updated
+        html: `<div class="waypoint-marker"></div>`,
         iconSize: [32, 32],
         iconAnchor: [16, 16],
       })
@@ -172,7 +153,6 @@ function addWaypoints() {
     waypoint.marker = marker;
   });
 
-  // Update all markers with proper styling
   updateAllWaypointMarkers();
 }
 
@@ -182,7 +162,6 @@ function startTracking() {
     showMobileNotification("GPS not available on this device", "error");
     return;
   }
-
   isTracking = true;
 
   // Use Leaflet's locate method
@@ -206,14 +185,9 @@ function markWaypointAsVisited(waypointIndex) {
     if (!waypoint.visited) {
       waypoint.visited = true;
 
- 
-
-      // Update all waypoint markers to reflect new state
       updateAllWaypointMarkers();
 
-      // Show mobile-friendly completion message
       setTimeout(() => {
-        // Check if all waypoints completed
         if (currentWaypoints.every((wp) => wp.visited)) {
           setTimeout(() => {
             
@@ -229,22 +203,19 @@ function getNextWaypointIndex() {
   return currentWaypoints.findIndex((wp) => !wp.visited);
 }
 
+// Reset all waypoints in current route to unvisited
 function resetWaypoints() {
-  // Reset all waypoints in current route to unvisited
   currentWaypoints.forEach((waypoint) => {
     waypoint.visited = false;
   });
   
-  // Update all waypoint markers to reflect reset state
   updateAllWaypointMarkers();
   
-  // Clear trail coordinates and update trail polyline
   trailCoordinates = [];
   if (trailPolyline) {
     trailPolyline.setLatLngs([]);
   }
   
-  // Reset waypoint index in map-screen.js if available
   if (window.resetCurrentWaypointIndex) {
     window.resetCurrentWaypointIndex();
   }
@@ -256,7 +227,7 @@ function resetWaypoints() {
 function stopTracking() {
   if (isTracking) {
     isTracking = false;
-    map.stopLocate(); // Stop Leaflet's location watching
+    map.stopLocate(); 
     
     const startBtn = document.getElementById("start-tracking");
     if (startBtn) startBtn.disabled = false;
@@ -307,7 +278,7 @@ function showScreen(screenId) {
   if (screenId === "map-screen" && map) {
     setTimeout(() => {
       map.invalidateSize();
-    }, 100); // Timeout säkerställer att div:en är synlig
+    }, 100); 
   }
 }
 
@@ -332,10 +303,8 @@ function updateStartButtonState() {
 
 // Initialize button state and add listeners when DOM loads
 document.addEventListener("DOMContentLoaded", function () {
-  // Initially disable the button
   updateStartButtonState();
 
-  // Add listeners to time and difficulty selections
   document
     .querySelectorAll('input[name="time"], input[name="difficulty"]')
     .forEach((radio) => {
@@ -375,13 +344,11 @@ document.getElementById("home-btn").addEventListener("click", function () {
     .querySelectorAll('input[name="difficulty"]')
     .forEach((radio) => (radio.checked = false));
 
-  // Update button state after clearing selections
   updateStartButtonState();
 
   showScreen("start-screen");
 });
 
-// Wait for DOM to be ready
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initializeApp);
 } else {
