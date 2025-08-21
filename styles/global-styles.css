@@ -26,7 +26,7 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: var(--background);
     margin: 0;
-    padding: 20px;
+    box-sizing: border-box;
 }
 
 /* ===== TYPOGRAPHY ===== */

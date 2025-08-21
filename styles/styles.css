@@ -6,13 +6,11 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 4px;
-    padding-top: 70px;
+     gap: 2vw;
+    padding-top: 2vh;
 }
 
-section {
-    height: 100vh;
-}
+
 
 /* ===== START SCREEN ===== */
 #start-screen-container {
@@ -74,7 +72,7 @@ section {
 .map-screen-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+   max-height: 824px;
     background-color: var(--background);
     align-items: center;
 }
@@ -136,7 +134,7 @@ section {
 .arrival-instruction {
     display: inline-flex;
     margin: 0;
-    padding-top: 3.31rem;
+    padding-top: 1.5rem;
     padding-bottom: 1.31rem;
     justify-content: center;
     align-items: center;
@@ -283,7 +281,7 @@ section {
 #challenge-text {
     font-size: 20px;
     font-weight: 500;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .challenge-image-container {
@@ -309,13 +307,14 @@ section {
 }
 
 .challenge-actions {
-    margin-top: 30px;
+    /* margin-top: 30px; */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .challenge-actions p {
+  margin-top: 0;
     margin-bottom: 26px;
 }
 
