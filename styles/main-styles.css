@@ -67,16 +67,12 @@ button {
   background: var(--green);
   color: var(--white);
   border: none;
-  padding: 14px 18px;
-  border-radius: 20px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
   touch-action: manipulation;
   transition: all 0.2s ease;
-}
-
-button:active {
-  transform: scale(0.95);
 }
 
 button:disabled {
@@ -144,27 +140,17 @@ button:disabled {
     justify-content: center;
 }
 
-#start-tracking {
-    border-radius: 1.25rem;
-    border: none;
-    padding: 1rem;
-    color: var(--white);
-    font-size: 1rem;
-    font-weight: 700;
-    background: var(--green);
-}
-
 #start-screen-container {
     height: 100vh;
     display: flex;
     flex-direction: column;
     gap: 50px;
     justify-content: flex-start;
-    padding-top: 40px;
+    padding-top: 50px;
 }
 
 .selection-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 52px;
 }
