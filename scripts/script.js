@@ -4,20 +4,12 @@ let map;
 let userLocationMarker;
 let userLocation = null;
 let waypointMarkers = [];
-let routePolyline; // New: Line connecting waypoints
 let trailCoordinates = [];
 let trailPolyline;
 let isTracking = false;
 let userHeading = null;
 let compassGranted = false;
 let currentWaypoints = route_1; // Default waypoints
-
-// Mobile-specific utilities
-function vibrate(pattern = [100]) {
-  if ("vibrate" in navigator) {
-    navigator.vibrate(pattern);
-  }
-}
 
 // Initialize map with dynamic waypoints
 function initMap() {
@@ -37,13 +29,7 @@ function initMap() {
   }).addTo(map);
 
   addWaypoints();
-
-  // Initialize trail polyline (user's actual path)
-  trailPolyline = L.polyline([], {
-    color: "#ff3366",
-    weight: 4,
-    opacity: 0.8,
-  }).addTo(map);
+  
 
   // Add mobile-specific map interactions
   map.on("dragstart", () => {
@@ -70,10 +56,7 @@ function initializeMapWithRoute(newWaypoints) {
     });
     waypointMarkers = [];
 
-    // Clear existing route line
-    if (routePolyline) {
-      map.removeLayer(routePolyline);
-    }
+    
 
     // Add new waypoints and route line
     addWaypoints();
@@ -125,43 +108,72 @@ function onLocationFound(e) {
 
 }
 
+// Get current waypoint index (first unvisited waypoint)
+function getCurrentWaypointIndex() {
+  return currentWaypoints.findIndex(wp => !wp.visited);
+}
 
-
-// Add waypoints to map (now includes route line)
-function addWaypoints() {
-  // Create route line connecting all waypoints
-  const routeCoordinates = currentWaypoints.map(waypoint => waypoint.coordinates);
+// Update waypoint marker appearance based on its state
+function updateWaypointMarker(waypoint, index) {
+  if (!waypoint.marker) return;
   
-  routePolyline = L.polyline(routeCoordinates, {
-    color: "#417b5a", // Using your app's green color
-    weight: 3,
-    opacity: 0.7,
-    dashArray: "5, 10" // Dashed line to distinguish from user trail
-  }).addTo(map);
+  const currentIndex = getCurrentWaypointIndex();
+  let markerClass, markerContent;
+  
+  if (waypoint.visited) {
+    markerClass = "waypoint-visited";
+    markerContent = "✓";
+  } else if (index === currentIndex) {
+    markerClass = "waypoint-pending current-target";
+    markerContent = index + 1;
+  } else if (index === 0 && currentIndex === 0) {
+    markerClass = "waypoint-start current-target";
+    markerContent = index + 1;
+  } else if (index === 0) {
+    markerClass = "waypoint-start";
+    markerContent = index + 1;
+  } else {
+    markerClass = "waypoint-pending";
+    markerContent = index + 1;
+  }
+
+  const newIcon = L.divIcon({
+    className: "",
+    html: `<div class="waypoint-marker ${markerClass}">${markerContent}</div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+  });
+
+  waypoint.marker.setIcon(newIcon);
+}
+
+// Update all waypoint markers to reflect current state
+function updateAllWaypointMarkers() {
+  currentWaypoints.forEach((waypoint, index) => {
+    updateWaypointMarker(waypoint, index);
+  });
+}
+
+// Add waypoints to map (now includes route line and current target highlighting)
+function addWaypoints() {
 
   // Add waypoint markers
   currentWaypoints.forEach((waypoint, index) => {
-    const markerClass = waypoint.visited
-      ? "waypoint-visited"
-      : index === 0
-      ? "waypoint-start"
-      : "waypoint-pending";
-
-    // Use checkmark for visited waypoints, number for others
-    const markerContent = waypoint.visited ? "✓" : index + 1;
-
-    const icon = L.divIcon({
-      className: "",
-      html: `<div class="waypoint-marker ${markerClass}">${markerContent}</div>`,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-    });
-
-    const marker = L.marker(waypoint.coordinates, { icon: icon }).addTo(map);
+    const marker = L.marker(waypoint.coordinates, { 
+      icon: L.divIcon({
+        className: "",
+        html: `<div class="waypoint-marker"></div>`, // Placeholder, will be updated
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+      })
+    }).addTo(map);
 
     waypointMarkers.push(marker);
     waypoint.marker = marker;
   });
+
+  // Update all markers with proper styling
+  updateAllWaypointMarkers();
 }
 
 // Start location tracking using Leaflet's locate method
@@ -172,7 +184,6 @@ function startTracking() {
   }
 
   isTracking = true;
-  vibrate([100, 50, 100]);
 
   // Use Leaflet's locate method
   map.locate({
@@ -187,8 +198,6 @@ function startTracking() {
   if (startBtn) startBtn.disabled = true;
 }
 
-
-
 // Manual waypoint completion function
 function markWaypointAsVisited(waypointIndex) {
   if (waypointIndex >= 0 && waypointIndex < currentWaypoints.length) {
@@ -197,34 +206,23 @@ function markWaypointAsVisited(waypointIndex) {
     if (!waypoint.visited) {
       waypoint.visited = true;
 
-      // Mobile haptic feedback
-      vibrate([200, 100, 200, 100, 200]);
+ 
 
-      // Update marker appearance with checkmark
-      const newIcon = L.divIcon({
-        className: "",
-        html: `<div class="waypoint-marker waypoint-visited">✓</div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
-      });
-
-      waypoint.marker.setIcon(newIcon);
-
-      
+      // Update all waypoint markers to reflect new state
+      updateAllWaypointMarkers();
 
       // Show mobile-friendly completion message
       setTimeout(() => {
         // Check if all waypoints completed
         if (currentWaypoints.every((wp) => wp.visited)) {
           setTimeout(() => {
-            vibrate([300, 100, 300, 100, 300, 100, 300]);
+            
           }, 1500);
         }
       }, 500);
     }
   }
 }
-
 
 // Get next unvisited waypoint index (now uses currentWaypoints)
 function getNextWaypointIndex() {
@@ -233,24 +231,12 @@ function getNextWaypointIndex() {
 
 function resetWaypoints() {
   // Reset all waypoints in current route to unvisited
-  currentWaypoints.forEach((waypoint, index) => {
+  currentWaypoints.forEach((waypoint) => {
     waypoint.visited = false;
-    
-    // Update marker appearance back to original state
-    if (waypoint.marker) {
-      const markerClass = index === 0 ? "waypoint-start" : "waypoint-pending";
-      const markerContent = index + 1;
-      
-      const newIcon = L.divIcon({
-        className: "",
-        html: `<div class="waypoint-marker ${markerClass}">${markerContent}</div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
-      });
-      
-      waypoint.marker.setIcon(newIcon);
-    }
   });
+  
+  // Update all waypoint markers to reflect reset state
+  updateAllWaypointMarkers();
   
   // Clear trail coordinates and update trail polyline
   trailCoordinates = [];
@@ -262,9 +248,6 @@ function resetWaypoints() {
   if (window.resetCurrentWaypointIndex) {
     window.resetCurrentWaypointIndex();
   }
-  
-  // Mobile haptic feedback
-  vibrate([100]);
   
   console.log("All waypoints reset to unvisited state");
 }
@@ -278,7 +261,6 @@ function stopTracking() {
     const startBtn = document.getElementById("start-tracking");
     if (startBtn) startBtn.disabled = false;
     
-    vibrate([200]);
     console.log("Tracking stopped");
   }
 }
@@ -287,7 +269,6 @@ function stopTracking() {
 function centerOnUser() {
   if (userLocation && map) {
     map.setView(userLocation, 18);
-    vibrate([50]);
   } else {
     showMobileNotification("Location not available", "error");
   }
@@ -295,10 +276,6 @@ function centerOnUser() {
 
 window.resetWaypoints = resetWaypoints;
 window.centerOnUser = centerOnUser;
-
-
-
-
 
 // Initialize the app when page loads
 function initializeApp() {
@@ -326,7 +303,6 @@ function showScreen(screenId) {
   });
   const activeScreen = document.getElementById(screenId);
   activeScreen.classList.add("active");
-
 
   if (screenId === "map-screen" && map) {
     setTimeout(() => {
