@@ -130,6 +130,8 @@ function onLocationError(e) {
   showLocationErrorModal(errorMessage, showRetryOption, isPermissionDenied);
 }
 
+
+
 // Show location error modal
 function showLocationErrorModal(message, showRetry = false, isPermissionDenied = false) {
   // Remove any existing error modal
