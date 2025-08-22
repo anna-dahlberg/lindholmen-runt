@@ -1,4 +1,7 @@
+// Map and location functionality module
 import { route_1 } from "./locations.js";
+import { showLocationErrorModal, hideLocationErrorModal } from './modals.js';
+import { showScreen } from './screens.js';
 
 let map;
 let userLocationMarker;
@@ -44,7 +47,7 @@ function initMap() {
 }
 
 // Function to initialize map with a specific route
-function initializeMapWithRoute(newWaypoints) {
+export function initializeMapWithRoute(newWaypoints) {
   currentWaypoints = newWaypoints;
 
   if (map) {
@@ -59,9 +62,6 @@ function initializeMapWithRoute(newWaypoints) {
     initMap();
   }
 }
-
-window.initializeMapWithRoute = initializeMapWithRoute;
-window.markWaypointAsVisited = markWaypointAsVisited;
 
 // Handle successful location detection
 function onLocationFound(e) {
@@ -124,118 +124,6 @@ function onLocationError(e) {
   }
   
   showLocationErrorModal(errorMessage, showRetryOption, isPermissionDenied);
-}
-
-
-
-// Show location error modal
-function showLocationErrorModal(message, showRetry = false, isPermissionDenied = false) {
-  // Remove any existing error modal
-  const existingModal = document.getElementById('locationErrorModal');
-  if (existingModal) {
-    existingModal.remove();
-  }
-  
-  // Format message for multi-line display
-  const formattedMessage = message.replace(/\n/g, '<br>');
-  
-  // Different button text and action based on error type
-  const retryButtonText = isPermissionDenied ? "Tillbaka till start" : "Försök igen";
-  const retryFunction = isPermissionDenied ? "goBackToStart" : "retryLocationAccess";
-  
-  // Create modal HTML
-  const modalHTML = `
-    <div id="locationErrorModal" class="modal-overlay">
-      <div class="modal" style="height: auto; min-height: 11.6875rem; padding: 20px;">
-        <div class="modal-message">
-          <h2 style="color: var(--warning); margin-bottom: 1rem;">Platsfel</h2>
-          <div style="text-align: center; white-space: pre-line; line-height: 1.4;">${formattedMessage}</div>
-        </div>
-        <div class="modal-actions" style="margin-top: 20px;">
-          ${showRetry ? `<button class="modal-btn modal-btn-confirm" onclick="${retryFunction}()">${retryButtonText}</button>` : ''}
-        </div>
-      </div>
-    </div>
-  `;
-  
-  // Add modal to DOM
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
-  
-  // Show modal
-  setTimeout(() => {
-    const modal = document.getElementById('locationErrorModal');
-    if (modal) {
-      modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-  }, 100);
-}
-
-// Hide location error modal
-function hideLocationErrorModal() {
-  const modal = document.getElementById('locationErrorModal');
-  if (modal) {
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
-    setTimeout(() => {
-      modal.remove();
-    }, 300);
-  }
-}
-
-// Retry location access - check permission status first
-function retryLocationAccess() {
-  hideLocationErrorModal();
-  
-  // Check permission status before retrying
-  if (navigator.permissions) {
-    navigator.permissions.query({name: 'geolocation'}).then(function(result) {
-      if (result.state === 'denied') {
-        // Still denied, show instructions again
-        setTimeout(() => {
-          showLocationErrorModal(
-            "Platståtkomst är fortfarande blockerad.",
-            true,
-            true
-          );
-        }, 500);
-        return;
-      }
-      
-      // Permission is granted or prompt, try again
-      setTimeout(() => {
-        startTracking();
-      }, 500);
-    }).catch(() => {
-      // Fallback - just try again
-      setTimeout(() => {
-        startTracking();
-      }, 500);
-    });
-  } else {
-    // Fallback for browsers without permissions API
-    setTimeout(() => {
-      startTracking();
-    }, 500);
-  }
-}
-
-// Go back to start screen (for permission denied errors)
-function goBackToStart() {
-  hideLocationErrorModal();
-  
-  // Reset all selections and go back to start screen
-  setTimeout(() => {
-    // Reset form selections
-    document.querySelectorAll('input[name="time"]').forEach((radio) => (radio.checked = false));
-    document.querySelectorAll('input[name="difficulty"]').forEach((radio) => (radio.checked = false));
-    
-    // Update button state
-    updateStartButtonState();
-    
-    // Show start screen
-    showScreen("start-screen");
-  }, 300);
 }
 
 // Get current waypoint index (first unvisited waypoint)
@@ -352,7 +240,7 @@ function startLocationTracking() {
 }
 
 // Manual waypoint completion function
-function markWaypointAsVisited(waypointIndex) {
+export function markWaypointAsVisited(waypointIndex) {
   if (waypointIndex >= 0 && waypointIndex < currentWaypoints.length) {
     const waypoint = currentWaypoints[waypointIndex];
 
@@ -378,7 +266,7 @@ function getNextWaypointIndex() {
 }
 
 // Reset all waypoints in current route to unvisited
-function resetWaypoints() {
+export function resetWaypoints() {
   currentWaypoints.forEach((waypoint) => {
     waypoint.visited = false;
   });
@@ -393,8 +281,6 @@ function resetWaypoints() {
   if (window.resetCurrentWaypointIndex) {
     window.resetCurrentWaypointIndex();
   }
-  
- 
 }
 
 // Stop location tracking
@@ -405,12 +291,11 @@ function stopTracking() {
     
     const startBtn = document.getElementById("start-tracking");
     if (startBtn) startBtn.disabled = false;
-    
   }
 }
 
 // Center map on user location
-function centerOnUser() {
+export function centerOnUser() {
   if (userLocation && map) {
     map.setView(userLocation, 18);
   } else {
@@ -418,125 +303,72 @@ function centerOnUser() {
   }
 }
 
+// Retry location access - check permission status first
+export function retryLocationAccess() {
+  hideLocationErrorModal();
+  
+  // Check permission status before retrying
+  if (navigator.permissions) {
+    navigator.permissions.query({name: 'geolocation'}).then(function(result) {
+      if (result.state === 'denied') {
+        // Still denied, show instructions again
+        setTimeout(() => {
+          showLocationErrorModal(
+            "Platståtkomst är fortfarande blockerad.",
+            true,
+            true
+          );
+        }, 500);
+        return;
+      }
+      
+      // Permission is granted or prompt, try again
+      setTimeout(() => {
+        startTracking();
+      }, 500);
+    }).catch(() => {
+      // Fallback - just try again
+      setTimeout(() => {
+        startTracking();
+      }, 500);
+    });
+  } else {
+    // Fallback for browsers without permissions API
+    setTimeout(() => {
+      startTracking();
+    }, 500);
+  }
+}
+
+// Go back to start screen (for permission denied errors)
+export function goBackToStart() {
+  hideLocationErrorModal();
+  
+  // Reset all selections and go back to start screen
+  setTimeout(() => {
+    // Reset form selections
+    document.querySelectorAll('input[name="time"]').forEach((radio) => (radio.checked = false));
+    document.querySelectorAll('input[name="difficulty"]').forEach((radio) => (radio.checked = false));
+    
+    // Update button state
+    if (window.updateStartButtonState) {
+      window.updateStartButtonState();
+    }
+    
+    // Show start screen
+    showScreen("start-screen");
+  }, 300);
+}
+
+// Initialize map when called
+export function initializeMap() {
+  initMap();
+}
+
+// Make functions available globally
+window.initializeMapWithRoute = initializeMapWithRoute;
+window.markWaypointAsVisited = markWaypointAsVisited;
 window.resetWaypoints = resetWaypoints;
 window.centerOnUser = centerOnUser;
-window.hideLocationErrorModal = hideLocationErrorModal;
 window.retryLocationAccess = retryLocationAccess;
 window.goBackToStart = goBackToStart;
-
-// Initialize the app when page loads
-function initializeApp() {
-  initMap();
-
-  // Add event listeners after map is initialized
-  const startBtn = document.getElementById("start-tracking");
-  const stopBtn = document.getElementById("stop-tracking");
-  const resetBtn = document.getElementById("reset-waypoints");
-  const centerBtn = document.getElementById("center-user");
-  const setWaypointsBtn = document.getElementById("set-waypoints");
-  const trailToggle = document.getElementById("show-trail");
-
-  if (startBtn) startBtn.addEventListener("click", startTracking);
-  if (stopBtn) stopBtn.addEventListener("click", stopTracking);
-  if (resetBtn) resetBtn.addEventListener("click", resetWaypoints);
-  if (centerBtn) centerBtn.addEventListener("click", centerOnUser);
-  if (trailToggle) trailToggle.addEventListener("change", toggleTrail);
-}
-
-function showScreen(screenId) {
-  const screens = document.querySelectorAll(".screen");
-  screens.forEach((screen) => {
-    screen.classList.remove("active");
-  });
-  const activeScreen = document.getElementById(screenId);
-  activeScreen.classList.add("active");
-
-  if (screenId === "map-screen" && map) {
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 100); 
-  }
-}
-
-// Function to check if both selections are made and update button state
-function updateStartButtonState() {
-  const selectedTime = document.querySelector('input[name="time"]:checked');
-  const selectedDifficulty = document.querySelector(
-    'input[name="difficulty"]:checked'
-  );
-  const startButton = document.getElementById("start-tracking");
-
-  if (selectedTime && selectedDifficulty) {
-    startButton.disabled = false;
-    startButton.style.background = "var(--green)";
-    startButton.style.cursor = "pointer";
-  } else {
-    startButton.disabled = true;
-    startButton.style.background = "var(--grey)";
-    startButton.style.cursor = "not-allowed";
-  }
-}
-
-// Initialize button state and add listeners when DOM loads
-document.addEventListener("DOMContentLoaded", function () {
-  updateStartButtonState();
-
-  document
-    .querySelectorAll('input[name="time"], input[name="difficulty"]')
-    .forEach((radio) => {
-      radio.addEventListener("change", updateStartButtonState);
-    });
-});
-
-document
-  .getElementById("start-tracking")
-  .addEventListener("click", function () {
-    const selectedTime = document.querySelector('input[name="time"]:checked');
-    const selectedDifficulty = document.querySelector(
-      'input[name="difficulty"]:checked'
-    );
-
-    if (!selectedTime || !selectedDifficulty) {
-      alert("Vänligen välj både tid och svårighetsgrad!");
-      return;
-    }
-
-    showScreen("map-screen");
-  });
-
-document.getElementById("arrived-btn").addEventListener("click", function () {
-  showScreen("challenge-screen");
-});
-
-document.getElementById("done-btn").addEventListener("click", function () {
-  showScreen("final-screen");
-});
-
-document.getElementById("home-btn").addEventListener("click", function () {
-  document
-    .querySelectorAll('input[name="time"]')
-    .forEach((radio) => (radio.checked = false));
-  document
-    .querySelectorAll('input[name="difficulty"]')
-    .forEach((radio) => (radio.checked = false));
-
-  updateStartButtonState();
-
-  showScreen("start-screen");
-});
-
-// Add keyboard support for error modal
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    const modal = document.getElementById('locationErrorModal');
-    if (modal && modal.classList.contains('show')) {
-      hideLocationErrorModal();
-    }
-  }
-});
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeApp);
-} else {
-  initializeApp();
-}
