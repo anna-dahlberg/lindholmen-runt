@@ -17,7 +17,7 @@ function selectRoute(timeSelection) {
     case '20':
       return route_2; // 9 waypoints  
     case '30':
-      return route_3; // 13 waypoints
+      return route_3; // 11 waypoints
     default:
       return route_1;
   }
@@ -142,12 +142,24 @@ function updateChallengeScreen(waypoint, difficulty) {
       break;
   }
   document.getElementById('challenge-text').textContent = challengeText;
+
+    const exerciseAltText = {
+    1: "Person som gör dips med hjälp av en bänk",
+    2: "Person som gör armhävningar på marken", 
+    3: "Person som springer mellan två punkter",
+    4: "Person som gör utfallssteg",
+    6: "Person som gör situps",
+    7: "Person som springer uppför en trappa",
+    8: "Person som joggar/springer uppför en backe",
+    9: "Person som gör tåhävningar på en trottoarkant",
+    10: "Person gör plankan i gräset"
+  };
   
   // Set the exercise image based on exercise_id
   const challengeImage = document.querySelector('.challenge-image');
   if (challengeImage && waypoint.exercise_id) {
     challengeImage.src = `assets/${waypoint.exercise_id}.png`;
-    challengeImage.alt = `Exercise ${waypoint.exercise_id}`;
+    challengeImage.alt = exerciseAltText[waypoint.exercise_id] || `Övningsdemonstration ${waypoint.exercise_id}`;
   }
 }
 
