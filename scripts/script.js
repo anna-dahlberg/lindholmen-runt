@@ -71,10 +71,6 @@ function onLocationFound(e) {
 
   userLocation = [lat, lng];
 
-  console.log(
-    `Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}, Accuracy: ${accuracy}m`
-  );
-
   trailCoordinates.push(userLocation);
 
   // Update or create user location marker with directional indicator
@@ -398,7 +394,7 @@ function resetWaypoints() {
     window.resetCurrentWaypointIndex();
   }
   
-  console.log("All waypoints reset to unvisited state");
+ 
 }
 
 // Stop location tracking
@@ -410,7 +406,6 @@ function stopTracking() {
     const startBtn = document.getElementById("start-tracking");
     if (startBtn) startBtn.disabled = false;
     
-    console.log("Tracking stopped");
   }
 }
 
