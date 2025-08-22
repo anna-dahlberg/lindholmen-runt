@@ -8,10 +8,6 @@ let userLocationMarker;
 let userLocation = null;
 let waypointMarkers = [];
 let trailCoordinates = [];
-let trailPolyline;
-let isTracking = false;
-let userHeading = null;
-let compassGranted = false;
 let currentWaypoints = route_1; 
 
 // Initialize map with dynamic waypoints
@@ -95,7 +91,6 @@ function onLocationError(e) {
   console.error("Location error:", e);
   
   // Reset tracking state
-  isTracking = false;
   const startBtn = document.getElementById("start-tracking");
   if (startBtn) startBtn.disabled = false;
   
@@ -224,7 +219,6 @@ function startTracking() {
 
 // Separate the actual tracking logic
 function startLocationTracking() {
-  isTracking = true;
 
   // Use Leaflet's locate method
   map.locate({
@@ -260,11 +254,6 @@ export function markWaypointAsVisited(waypointIndex) {
   }
 }
 
-// Get next unvisited waypoint index (now uses currentWaypoints)
-function getNextWaypointIndex() {
-  return currentWaypoints.findIndex((wp) => !wp.visited);
-}
-
 // Reset all waypoints in current route to unvisited
 export function resetWaypoints() {
   currentWaypoints.forEach((waypoint) => {
@@ -272,25 +261,10 @@ export function resetWaypoints() {
   });
   
   updateAllWaypointMarkers();
-  
-  trailCoordinates = [];
-  if (trailPolyline) {
-    trailPolyline.setLatLngs([]);
-  }
+
   
   if (window.resetCurrentWaypointIndex) {
     window.resetCurrentWaypointIndex();
-  }
-}
-
-// Stop location tracking
-function stopTracking() {
-  if (isTracking) {
-    isTracking = false;
-    map.stopLocate(); 
-    
-    const startBtn = document.getElementById("start-tracking");
-    if (startBtn) startBtn.disabled = false;
   }
 }
 
