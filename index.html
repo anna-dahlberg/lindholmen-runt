@@ -2,15 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
     <title>Lindholmen Runt</title>
 
-      <link
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
     />
-    
-    <link rel="icon" type="image/x-icon" href="/assets/tab_icon.png">
+
+    <link rel="icon" type="image/x-icon" href="/assets/tab_icon.png" />
 
     <link rel="stylesheet" href="/styles/global-styles.css" />
     <link rel="stylesheet" href="styles/styles.css" />
@@ -24,7 +27,6 @@
     />
   </head>
   <body>
-
     <!-- Header with logo and title -->
     <header>
       <svg
@@ -61,13 +63,11 @@
       </svg>
       <h1>Lindholmen Runt</h1>
     </header>
-    
+
     <!-- Start screen -->
     <section class="screen active" id="start-screen">
       <div id="start-screen-container">
-
         <div class="selection-wrapper">
-
           <h1 class="bold center">Anpassa träningsrunda</h1>
 
           <!-- Time selection -->
@@ -133,25 +133,20 @@
           <div class="create-route-button-container">
             <button id="start-tracking">Starta</button>
           </div>
-
         </div>
-
       </div>
     </section>
 
     <!-- Map screen -->
     <section class="screen" id="map-screen">
-      <div class="map-screen-container">      
-
+      <div class="map-screen-container">
         <!-- Timer -->
         <div class="timer-container">
           <span class="timer">00:00</span>
         </div>
-        
+
         <!-- Instruction text -->
-        <div class="map-instruction">
-          Gå till Lindholmspiren
-        </div>
+        <div class="map-instruction">Gå till Lindholmspiren</div>
 
         <!-- Map container -->
         <div class="map-container">
@@ -160,7 +155,9 @@
 
         <!-- Bottom section with button and cancel -->
         <div class="map-bottom-section">
-          <p class="arrival-instruction">När du är framme, tryck på “Visa övning“</p>
+          <p class="arrival-instruction">
+            När du är framme, tryck på “Visa övning“
+          </p>
           <button class="arrival-btn" id="arrived-btn">Visa övning</button>
           <a href="#" class="cancel-link" id="cancel-link">Avbryt</a>
         </div>
@@ -169,13 +166,19 @@
 
     <!-- Challenge screen -->
     <section class="screen" id="challenge-screen">
+      <button class="back-arrow" id="back-to-map-btn" onclick="goBackToMap()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+          />
+        </svg>
+      </button>
       <div class="challenge-container">
-
         <!-- Timer -->
         <div class="challenge-timer-container">
           <span class="challenge-timer">00:00</span>
         </div>
-        
+
         <!-- Challenge title -->
         <div class="challenge-header">
           <h1 id="challenge-title" class="bold"></h1>
@@ -188,7 +191,7 @@
 
         <!-- Image container -->
         <div class="challenge-image-container" id="challenge-image">
-          <img src="/" alt="" class="challenge-image">
+          <img src="/" alt="" class="challenge-image" />
         </div>
 
         <!-- Challenge actions -->
@@ -203,40 +206,45 @@
     <!-- Final screen -->
     <section class="screen" id="final-screen">
       <div class="final-container">
+        <h1 class="bold">Bra jobbat!<br />Du är klar med rundan!</h1>
 
-        <h1 class="bold">Bra jobbat!<br>Du är klar med rundan!</h1>
-
-        <div><img src="/assets/trophy_gif.gif" alt="Moving image with trophy and fireworks" class= "final-image"></div>
+        <div>
+          <img
+            src="/assets/trophy_gif.gif"
+            alt="Moving image with trophy and fireworks"
+            class="final-image"
+          />
+        </div>
 
         <div class="final-time-container"></div>
 
         <button class="challenge-done-btn" id="home-btn">Avsluta</button>
-
       </div>
     </section>
 
     <!-- Cancel confirmation modal -->
     <div class="modal-overlay" id="cancelModal">
-    <div class="modal">
+      <div class="modal">
         <p class="modal-message">
-            Är du säker på att du vill<br>avbryta träningen?
+          Är du säker på att du vill<br />avbryta träningen?
         </p>
         <div class="modal-actions">
-            <button class="modal-btn modal-btn-confirm" onclick="confirmCancel()">
-                Ja, avbryt
-            </button>
-            <button class="modal-btn modal-btn-cancel" onclick="hideCancelConfirmation()">
-                Nej, gå tillbaka
-            </button>
+          <button class="modal-btn modal-btn-confirm" onclick="confirmCancel()">
+            Ja, avbryt
+          </button>
+          <button
+            class="modal-btn modal-btn-cancel"
+            onclick="hideCancelConfirmation()"
+          >
+            Nej, gå tillbaka
+          </button>
         </div>
+      </div>
     </div>
-</div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script src="https://unpkg.com/leaflet-rotate/dist/leaflet-rotate.js"></script>
     <script type="module" src="scripts/script.js"></script>
     <script type="module" src="scripts/map-screen.js"></script>
-
-
   </body>
 </html>

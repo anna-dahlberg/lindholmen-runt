@@ -357,7 +357,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+function goBackToMap() {
+    showScreen("map-screen");
+    updateMapInstruction(); 
+}
+
+
+
 // Make functions available globally 
+window.goBackToMap = goBackToMap;
 window.currentWaypoints = selectedRoute;
 window.selectedDifficulty = selectedDifficulty;
 window.resetCurrentWaypointIndex = resetCurrentWaypointIndex;
