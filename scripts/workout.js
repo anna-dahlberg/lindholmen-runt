@@ -143,6 +143,11 @@ export function initializeWorkoutEventListeners() {
     if (window.initializeMapWithRoute) {
       window.initializeMapWithRoute(selectedRoute);
     }
+    
+    // Start location tracking when entering map screen
+    if (window.startLocationTracking) {
+      window.startLocationTracking();
+    }
   });
 
   // Arrived button

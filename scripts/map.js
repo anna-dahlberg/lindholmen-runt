@@ -372,3 +372,4 @@ window.resetWaypoints = resetWaypoints;
 window.centerOnUser = centerOnUser;
 window.retryLocationAccess = retryLocationAccess;
 window.goBackToStart = goBackToStart;
+window.startLocationTracking = startLocationTracking;
