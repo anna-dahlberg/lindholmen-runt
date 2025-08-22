@@ -13,6 +13,7 @@ export const route_1 = [
   {
     id: 2,
     name: "Lunchbryggan",
+    visited: false,
     coordinates: [57.70549121502736, 11.938579413848506],
     easy_challenge: "Gör 3x3 armhävningar",
     medium_challenge: "Gör 3x6 armhävningar",
@@ -22,6 +23,7 @@ export const route_1 = [
   {
     id: 3,
     name: "Bågen",
+    visited: false,
     coordinates: [57.705053637391764, 11.938487523301008],
     easy_challenge: "Spring så fort du kan mellan två bågar 3 gånger",
     medium_challenge: "Spring så fort du kan mellan två bågar 6 gånger",
@@ -31,6 +33,7 @@ export const route_1 = [
   {
     id: 4,
     name: "Restaurang Äran",
+    visited: false,
     coordinates: [57.704410187796114, 11.937695571152092],
     easy_challenge: "Gör 3x4 utfallssteg och njut av utsikten",
     medium_challenge: "Gör 3x8 utfallssteg och njut av utsikten",
